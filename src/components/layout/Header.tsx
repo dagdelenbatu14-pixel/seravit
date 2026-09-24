@@ -35,25 +35,25 @@ export async function Header() {
 
   return (
     <header className="sticky top-0 z-40">
-      {/* Duyuru çubuğu */}
-      <div className="bg-night text-paper/80">
-        <div className="container-page flex min-h-9 items-center justify-between gap-6 text-xs">
-          <p className="hidden items-center gap-2 lg:flex">
+      {/* Duyuru çubuğu — geniş ekranda tek satır, dar ekranda aynı içerik kayan şerit olarak */}
+      <div className="bg-night text-xs text-paper/80">
+        <div className="container-page hidden min-h-9 items-center justify-between gap-6 xl:flex">
+          <p className="flex items-center gap-2">
             <Icon name="pin" className="size-3.5" />
             {siteConfig.address.locality}, {siteConfig.address.district}
             <span className="text-paper/30">|</span>
             <Icon name="clock" className="size-3.5" />
             {hoursSummary()}
           </p>
-          <ul className="flex flex-1 items-center justify-center gap-6 overflow-hidden lg:flex-none">
-            {siteConfig.announcements.map((a, i) => (
-              <li key={a} className={`flex items-center gap-2 whitespace-nowrap ${i > 0 ? "hidden xl:flex" : ""}`}>
+          <ul className="flex items-center gap-6">
+            {siteConfig.announcements.map((a) => (
+              <li key={a} className="flex items-center gap-2 whitespace-nowrap">
                 <span className="size-1 rounded-full bg-gold" aria-hidden />
                 {a}
               </li>
             ))}
           </ul>
-          <div className="hidden items-center gap-5 md:flex">
+          <div className="flex items-center gap-5">
             <Link href="/toptan#basvuru" className="hover:text-paper">
               Bayi / Proje Başvurusu
             </Link>
@@ -61,6 +61,40 @@ export async function Header() {
               <Icon name="phone" className="size-3.5" />
               {siteConfig.contact.phone}
             </a>
+          </div>
+        </div>
+
+        <div className="overflow-hidden motion-reduce:overflow-x-auto xl:hidden">
+          <div className="flex w-max animate-marquee hover:[animation-play-state:paused] motion-reduce:animate-none">
+            {[0, 1].map((copy) => (
+              <ul key={copy} aria-hidden={copy === 1} className="flex min-h-9 shrink-0 items-center gap-7 pr-7 whitespace-nowrap">
+                <li className="flex items-center gap-1.5">
+                  <Icon name="pin" className="size-3.5" />
+                  {siteConfig.address.locality}, {siteConfig.address.district}
+                </li>
+                <li className="flex items-center gap-1.5">
+                  <Icon name="clock" className="size-3.5" />
+                  {hoursSummary()}
+                </li>
+                {siteConfig.announcements.map((a) => (
+                  <li key={a} className="flex items-center gap-2">
+                    <span className="size-1 rounded-full bg-gold" aria-hidden />
+                    {a}
+                  </li>
+                ))}
+                <li>
+                  <Link href="/toptan#basvuru" tabIndex={copy === 1 ? -1 : undefined} className="underline-offset-4 hover:underline">
+                    Bayi / Proje Başvurusu
+                  </Link>
+                </li>
+                <li>
+                  <a href={siteConfig.contact.phoneHref} tabIndex={copy === 1 ? -1 : undefined} className="flex items-center gap-1.5">
+                    <Icon name="phone" className="size-3.5" />
+                    {siteConfig.contact.phone}
+                  </a>
+                </li>
+              </ul>
+            ))}
           </div>
         </div>
       </div>
