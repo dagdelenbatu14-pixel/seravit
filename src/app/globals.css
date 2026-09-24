@@ -1,0 +1,128 @@
+@import "tailwindcss";
+
+/*
+ * Seravit tasarım token'ları
+ * Logo: didone serif + ametist mürekkep + altın zerre.
+ * Referanslar: Güral (koyu bantlar, geniş aralıklı başlıklar), VitrA (hizmet/güven blokları),
+ * Qua (tam genişlik vitrin), Bien (bento kullanım alanları).
+ */
+@theme {
+  --color-ink: #0b0809;
+  --color-ink-soft: #57505a;
+  --color-paper: #fcfbfa;
+  --color-linen: #f4f1ee;
+  --color-mist: #f5f0f6;
+  --color-line: #e6e0e3;
+
+  --color-night: #141115;
+  --color-night-soft: #231e25;
+
+  --color-amethyst-900: #4b1f57;
+  --color-amethyst-700: #813e91;
+  --color-amethyst-500: #9660a4;
+  --color-amethyst-300: #c09fc8;
+  --color-amethyst-100: #ede3f0;
+
+  --color-gold: #c9a24a;
+  --color-gold-soft: #e7c873;
+
+  --font-display: var(--font-bodoni), "Bodoni 72", Didot, Georgia, serif;
+  --font-sans: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
+
+  --tracking-brand: 0.32em;
+
+  --animate-kenburns: kenburns 18s ease-out both;
+  --animate-fade-up: fade-up 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+
+  @keyframes kenburns {
+    from { transform: scale(1.12); }
+    to { transform: scale(1); }
+  }
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: none; }
+  }
+}
+
+@keyframes grow {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-paper font-sans text-ink antialiased;
+  }
+  h1, h2, h3 {
+    @apply font-display text-balance;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-amethyst-700;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@utility container-page {
+  @apply mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-10;
+}
+
+@utility eyebrow {
+  @apply text-[11px] font-medium uppercase tracking-(--tracking-brand) text-ink-soft;
+}
+
+@utility title-tracked {
+  @apply font-display font-normal uppercase tracking-[0.16em];
+}
+
+@utility btn {
+  @apply inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-7 text-sm font-medium tracking-wide transition-colors disabled:cursor-not-allowed disabled:opacity-60;
+}
+
+@utility btn-primary {
+  @apply btn bg-ink text-paper hover:bg-amethyst-900;
+}
+
+@utility btn-accent {
+  @apply btn bg-amethyst-700 text-white hover:bg-amethyst-900;
+}
+
+@utility btn-light {
+  @apply btn bg-paper text-ink hover:bg-amethyst-100;
+}
+
+@utility btn-outline {
+  @apply btn border border-ink/20 text-ink hover:border-ink hover:bg-ink hover:text-paper;
+}
+
+@utility btn-outline-light {
+  @apply btn border border-paper/40 text-paper hover:border-paper hover:bg-paper hover:text-ink;
+}
+
+@utility field {
+  @apply block w-full rounded-lg border border-line bg-white px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-soft/60 focus:border-amethyst-500 focus:outline-none focus:ring-2 focus:ring-amethyst-300/50;
+}
+
+@utility label {
+  @apply mb-1.5 block text-sm font-medium text-ink;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility chip {
+  @apply inline-flex min-h-9 items-center gap-1.5 rounded-full border border-line bg-white px-3.5 text-sm text-ink transition-colors hover:border-ink/40;
+}
