@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { INK_RECT, WORDMARK_PATHS } from "@/components/brand/logo-paths";
 import { asset } from "@/lib/asset";
 
-const KEY = "seravit:intro";
 const TOTAL_MS = 3600;
 const TILES = 24; // mobil 3×8, masaüstü 6×4
 
@@ -16,9 +15,10 @@ const sparks = Array.from({ length: 14 }, (_, i) => {
 });
 
 /**
- * İlk ziyarette açılış: mürekkep açılır, wordmark çizilir, siyah karo duvarı
- * karo karo kalkarak siteyi açar. Oturum başına bir kez; "hareketi azalt"
- * tercihinde gösterilmez. Tekrar ziyarette <html data-intro="seen"> ile anında gizlenir.
+ * Açılış: mürekkep açılır, wordmark çizilir, siyah karo duvarı karo karo kalkarak
+ * siteyi açar. Siteye her girişte (tam sayfa yüklemede) oynar; site içinden ana
+ * sayfaya dönüşte tekrar oynamaz (<html data-intro="seen">). "Hareketi azalt"
+ * tercihinde gösterilmez.
  */
 export function Intro() {
   const [gone, setGone] = useState(false);
@@ -32,9 +32,6 @@ export function Intro() {
       const t = setTimeout(finish, 0);
       return () => clearTimeout(t);
     }
-    try {
-      sessionStorage.setItem(KEY, "1");
-    } catch {}
     const t = setTimeout(finish, TOTAL_MS);
     return () => clearTimeout(t);
   }, []);
