@@ -8,6 +8,7 @@ import { hoursSummary, mainNav, siteConfig } from "@/config/site";
 import { getCollections, getFacets, getRootCategories } from "@/lib/catalog";
 import { lookLabel, lookTexture, surfaceLabel, usageLabel } from "@/lib/labels";
 import { MobileMenu, type MobileSection } from "./MobileMenu";
+import Form from "next/form";
 
 export async function Header() {
   const [facets, bathCats, collections] = await Promise.all([
@@ -153,7 +154,7 @@ export async function Header() {
           </nav>
 
           <div className="ml-auto flex items-center gap-2 lg:ml-0">
-            <form action="/urunler" role="search" className="relative hidden xl:block">
+            <Form action="/urunler" role="search" className="relative hidden xl:block">
               <label htmlFor="header-q" className="sr-only">
                 Ürün ara
               </label>
@@ -165,7 +166,7 @@ export async function Header() {
                 className="h-11 w-56 rounded-full border border-line bg-white pl-10 pr-4 text-sm placeholder:text-ink-soft/60 focus:border-amethyst-500 focus:outline-none"
               />
               <Icon name="search" className="pointer-events-none absolute left-3.5 top-3 size-5 text-ink-soft" />
-            </form>
+            </Form>
             <Link href="/urunler" aria-label="Ürün ara" className="grid size-11 place-items-center rounded-full hover:bg-linen xl:hidden">
               <Icon name="search" />
             </Link>

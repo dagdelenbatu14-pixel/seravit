@@ -1,4 +1,5 @@
 import type { FormState } from "@/lib/validation";
+import Link from "next/link";
 
 type FieldProps = {
   name: string;
@@ -49,9 +50,9 @@ export function Consent({ state }: { state: FormState }) {
         <input type="checkbox" name="consent" required className="mt-1 size-4 accent-amethyst-700" />
         <span>
           Kişisel verilerimin talebimin yanıtlanması amacıyla işlenmesine ilişkin{" "}
-          <a href="/kvkk" className="underline underline-offset-4">
+          <Link href="/kvkk" className="underline underline-offset-4">
             KVKK aydınlatma metnini
-          </a>{" "}
+          </Link>{" "}
           okudum.
         </span>
       </label>

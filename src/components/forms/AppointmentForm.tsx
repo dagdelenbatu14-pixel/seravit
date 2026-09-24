@@ -1,17 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { submitAppointment } from "@/app/actions";
+import { useSearchParams } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
 import { siteConfig } from "@/config/site";
-import { visitTypes } from "@/lib/validation";
+import { appointmentSchema, visitTypes } from "@/lib/validation";
 import { Consent, Field, FormStatus } from "./Field";
 import { useLeadForm } from "./useLeadForm";
 
 type VisitType = keyof typeof visitTypes;
 
 export function AppointmentForm({ defaultType = "showroom" }: { defaultType?: VisitType }) {
-  const { state, onSubmit, pending } = useLeadForm(submitAppointment);
+  const { state, onSubmit, pending } = useLeadForm("randevu", appointmentSchema, "Randevu talebiniz hazır; onay için sizi arayacağız.");
   const [type, setType] = useState<VisitType>(defaultType);
   const today = new Date().toISOString().slice(0, 10);
 
@@ -74,4 +74,11 @@ export function AppointmentForm({ defaultType = "showroom" }: { defaultType?: Vi
       </button>
     </form>
   );
+}
+
+/** ?tip=kesif parametresini okuyup keşif seçili açar (statik sitede tarayıcıda okunur) */
+export function AppointmentFormFromUrl() {
+  const tip = useSearchParams().get("tip");
+  const type: VisitType = tip === "kesif" ? "kesif" : "showroom";
+  return <AppointmentForm key={type} defaultType={type} />;
 }

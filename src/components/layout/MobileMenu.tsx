@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
 import { mainNav, siteConfig } from "@/config/site";
+import Form from "next/form";
 
 export type MobileSection = { label: string; links: { href: string; label: string }[] };
 
@@ -54,10 +55,10 @@ export function MobileMenu({ sections }: { sections: MobileSection[] }) {
               </button>
             </div>
             <div className="flex-1 overflow-y-auto px-5 py-4">
-              <form action="/urunler" role="search" className="relative mb-4">
+              <Form action="/urunler" role="search" className="relative mb-4">
                 <input name="q" type="search" placeholder="Ürün ara…" className="field pl-10" aria-label="Ürün ara" />
                 <Icon name="search" className="pointer-events-none absolute left-3 top-2.5 size-5 text-ink-soft" />
-              </form>
+              </Form>
               {sections.map((s) => (
                 <details key={s.label} className="group border-b border-line">
                   <summary className="flex cursor-pointer list-none items-center justify-between py-4 font-display text-2xl [&::-webkit-details-marker]:hidden">

@@ -12,6 +12,19 @@ npm run build
 
 `.env.example` → `.env.local` olarak kopyalayın.
 
+## Yayın (GitHub Pages)
+
+`main` dalına her push'ta `.github/workflows/pages.yml` siteyi statik olarak derleyip
+`https://<kullanıcı>.github.io/seravit/` adresinde yayınlar. Yerelde aynı çıktıyı almak için:
+
+```bash
+GITHUB_PAGES=true NEXT_PUBLIC_BASE_PATH=/seravit npx next build   # → out/
+```
+
+Sunucu olmadığı için formlar tarayıcıda doğrulanır ve talep **WhatsApp mesajı** olarak açılır.
+E-posta/Sheets'e düşmesi için depo ayarlarında `LEAD_ENDPOINT` değişkeni (Settings → Variables)
+olarak bir Formspree / Make / n8n adresi tanımlayın.
+
 ## Yapı
 
 ```
@@ -23,9 +36,8 @@ src/
 │  ├─ catalog/index.ts       # Katalog erişim katmanı (sayfalar yalnız bunu kullanır)
 │  ├─ pricing.ts             # Fiyat biçimi, birimler, toptan kademe indirimi
 │  ├─ validation.ts          # Form şemaları (zod)
-│  └─ leads.ts               # Form taleplerini webhook'a / loga iletir
+│  └─ leads.ts               # Form taleplerini webhook'a ya da WhatsApp'a iletir
 ├─ app/
-│  ├─ actions.ts             # Server actions: teklif, randevu, bayi, iletişim
 │  ├─ page.tsx               # Ana sayfa (iskelet)
 │  ├─ urunler/               # Katalog + kategori (arama, sıralama, showroom filtresi)
 │  ├─ urun/[slug]/           # Ürün detay, toptan kademe tablosu, teklife ekle
@@ -75,5 +87,5 @@ Fontlar: Bodoni Moda (başlık, logodaki didone serif), Jost (metin, geniş aral
 - [ ] Gerçek ürün ve showroom fotoğrafları
 - [ ] Ana sayfa "Profesyonellere özel" rakamlarını doğrulama
 - [ ] Ürün verisi kaynağı (Sanity / Payload CMS veya ERP entegrasyonu) + gerçek görseller
-- [ ] `LEAD_WEBHOOK_URL` (e-posta / WhatsApp / Sheets)
+- [ ] `LEAD_ENDPOINT` depo değişkeni (e-posta / Sheets) — tanımlanmazsa formlar WhatsApp'a gider
 - [ ] KVKK metni, Google Maps, analitik

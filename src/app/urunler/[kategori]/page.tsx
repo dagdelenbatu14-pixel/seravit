@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { CatalogView } from "@/components/product/CatalogView";
-import { getCategories, getCategory } from "@/lib/catalog";
+import { getCatalog, getCategories, getCategory } from "@/lib/catalog";
 
 export async function generateStaticParams() {
   return (await getCategories()).map((c) => ({ kategori: c.slug }));
@@ -18,7 +18,9 @@ export async function generateMetadata({ params }: PageProps<"/urunler/[kategori
   };
 }
 
-export default async function CategoryPage({ params, searchParams }: PageProps<"/urunler/[kategori]">) {
+export const dynamicParams = false;
+
+export default async function CategoryPage({ params }: PageProps<"/urunler/[kategori]">) {
   const category = await getCategory((await params).kategori);
   if (!category) notFound();
   const parent = category.parent ? await getCategory(category.parent) : undefined;
@@ -37,7 +39,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps<"
           { label: category.name },
         ]}
       />
-      <CatalogView category={category.slug} searchParams={await searchParams} />
+      <CatalogView data={await getCatalog()} category={category.slug} />
     </>
   );
 }

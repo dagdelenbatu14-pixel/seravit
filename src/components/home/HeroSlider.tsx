@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
+import { asset } from "@/lib/asset";
 
 export type HeroSlide = {
   texture: string;
@@ -52,7 +53,7 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
           className={`absolute inset-0 transition-opacity duration-1000 ${i === index ? "opacity-100" : "opacity-0"}`}
         >
           <div className={`absolute inset-0 ${i === index ? "animate-kenburns" : ""}`}>
-            <Image src={`/textures/${s.texture}.webp`} alt="" fill preload={i === 0} sizes="100vw" className="object-cover" />
+            <Image src={asset(`/textures/${s.texture}.webp`)} alt="" fill preload={i === 0} sizes="100vw" className="object-cover" />
           </div>
           <div
             className={`absolute inset-0 ${
@@ -63,7 +64,7 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
           />
           {s.ink && (
             <Image
-              src="/brand/ink.webp"
+              src={asset("/brand/ink.webp")}
               alt=""
               width={900}
               height={889}

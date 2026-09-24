@@ -2,6 +2,8 @@ import type { MetadataRoute } from "next";
 import { siteConfig } from "@/config/site";
 import { getAllProductSlugs, getCategories } from "@/lib/catalog";
 
+export const dynamic = "force-static";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteConfig.url;
   const [categories, slugs] = await Promise.all([getCategories(), getAllProductSlugs()]);

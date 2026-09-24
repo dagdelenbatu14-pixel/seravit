@@ -1,4 +1,5 @@
 import { INK_RECT, LOGO_VIEWBOX, TAGLINE_PATHS, WORDMARK_PATHS } from "./logo-paths";
+import { asset } from "@/lib/asset";
 
 type LogoProps = {
   className?: string;
@@ -19,7 +20,7 @@ export function Logo({ className, tagline = true, ink = true, title = "Seravit S
     <svg viewBox={viewBox} className={className} role="img" aria-label={title} fill="currentColor">
       {ink && (
         <image
-          href="/brand/ink.webp"
+          href={asset("/brand/ink.webp")}
           x={INK_RECT.x}
           y={INK_RECT.y}
           width={INK_RECT.width}

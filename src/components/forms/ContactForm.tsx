@@ -1,11 +1,11 @@
 "use client";
 
-import { submitContact } from "@/app/actions";
+import { contactSchema } from "@/lib/validation";
 import { Consent, Field, FormStatus } from "./Field";
 import { useLeadForm } from "./useLeadForm";
 
 export function ContactForm() {
-  const { state, onSubmit, pending } = useLeadForm(submitContact);
+  const { state, onSubmit, pending } = useLeadForm("iletisim", contactSchema, "Mesajınız hazır.");
 
   if (state?.ok) return <FormStatus state={state} />;
 

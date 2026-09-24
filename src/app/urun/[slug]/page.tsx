@@ -57,6 +57,8 @@ const stockTone: Record<Product["stock"], string> = {
   tukendi: "bg-red-500",
 };
 
+export const dynamicParams = false;
+
 export default async function ProductPage({ params }: PageProps<"/urun/[slug]">) {
   const product = await getProduct((await params).slug);
   if (!product) notFound();

@@ -1,41 +1,45 @@
+"use client";
+
+import { Suspense } from "react";
+import Form from "next/form";
 import Link from "next/link";
-import { getChildCategories, getCollection, getFacets, getProducts, getRootCategories } from "@/lib/catalog";
+import { useSearchParams } from "next/navigation";
+import {
+  computeFacets,
+  filterProducts,
+  many,
+  parseCatalogParams,
+  searchParamsToObject,
+  sortOptions as sorts,
+  sortProducts,
+  type SearchParams,
+} from "@/lib/catalog/query";
 import { lookLabel, lookTexture, surfaceLabel, usageLabel } from "@/lib/labels";
-import type { Look, ProductQuery, Surface, Usage, World } from "@/lib/types";
+import type { Category, Collection, Product, ProductQuery } from "@/lib/types";
 import { Icon } from "@/components/ui/Icon";
 import { FilterForm } from "./FilterForm";
 import { ProductGrid } from "./ProductCard";
 import { Texture } from "./TileVisual";
 
-const sorts: { value: NonNullable<ProductQuery["sort"]>; label: string }[] = [
-  { value: "onerilen", label: "Önerilen" },
-  { value: "fiyat-artan", label: "Fiyat (artan)" },
-  { value: "fiyat-azalan", label: "Fiyat (azalan)" },
-  { value: "isim", label: "İsim (A–Z)" },
-];
+export type CatalogData = { products: Product[]; categories: Category[]; collections: Collection[] };
 
-type SearchParams = Record<string, string | string[] | undefined>;
-const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v);
-const many = (v: string | string[] | undefined) => (v === undefined ? [] : Array.isArray(v) ? v : [v]).filter(Boolean);
-
-/** URL parametreleri (Türkçe) ↔ sorgu */
-export function parseCatalogParams(sp: SearchParams): Omit<ProductQuery, "category"> {
-  const sort = one(sp.sirala) as ProductQuery["sort"];
-  const world = one(sp.dunya) as World | undefined;
-  return {
-    q: one(sp.q) || undefined,
-    showroom: one(sp.showroom) === "1",
-    looks: many(sp.gorunum) as Look[],
-    surfaces: many(sp.yuzey) as Surface[],
-    sizes: many(sp.ebat),
-    usages: many(sp.alan) as Usage[],
-    collection: one(sp.koleksiyon) || undefined,
-    world: world && ["karo", "banyo", "yapi"].includes(world) ? world : undefined,
-    sort: sorts.some((s) => s.value === sort) ? sort : "onerilen",
-  };
+/**
+ * Ürün listesi + filtreler. Statik yayında filtreler URL parametrelerinden
+ * tarayıcıda okunur (useSearchParams); ilk HTML filtresiz listeyle gelir.
+ */
+export function CatalogView({ data, category }: { data: CatalogData; category?: string }) {
+  return (
+    <Suspense fallback={<CatalogBody data={data} category={category} searchParams={{}} />}>
+      <CatalogFromUrl data={data} category={category} />
+    </Suspense>
+  );
 }
 
-/** Bir parametre değerini kaldırılmış URL (aktif filtre çipleri için) */
+function CatalogFromUrl({ data, category }: { data: CatalogData; category?: string }) {
+  const params = useSearchParams();
+  return <CatalogBody data={data} category={category} searchParams={searchParamsToObject(params)} />;
+}
+
 function without(basePath: string, sp: SearchParams, key: string, value?: string) {
   const params = new URLSearchParams();
   for (const [k, v] of Object.entries(sp)) {
@@ -45,16 +49,17 @@ function without(basePath: string, sp: SearchParams, key: string, value?: string
   return s ? `${basePath}?${s}` : basePath;
 }
 
-export async function CatalogView({ category, searchParams }: { category?: string; searchParams: SearchParams }) {
+function CatalogBody({ data, category, searchParams }: { data: CatalogData; category?: string; searchParams: SearchParams }) {
   const query: ProductQuery = { ...parseCatalogParams(searchParams), category };
-  const [products, facets, roots, children, collection] = await Promise.all([
-    getProducts(query),
-    getFacets(query),
-    getRootCategories(),
-    category ? getChildCategories(category) : Promise.resolve([]),
-    query.collection ? getCollection(query.collection) : Promise.resolve(undefined),
-  ]);
+  const products = sortProducts(filterProducts(data.products, data.categories, query), query.sort);
+  const facets = computeFacets(data.products, data.categories, query);
+  const sortedCats = [...data.categories].sort((a, b) => a.order - b.order);
+  const roots = sortedCats.filter((c) => !c.parent);
+  const children = category ? sortedCats.filter((c) => c.parent === category) : [];
+  const collection = query.collection ? data.collections.find((c) => c.slug === query.collection) : undefined;
   const basePath = category ? `/urunler/${category}` : "/urunler";
+  // URL değişince kontrolsüz form alanlarını yeniden kur (filtre çipinden kaldırma vb.)
+  const stateKey = JSON.stringify(searchParams);
 
   const active: { label: string; href: string }[] = [
     ...(query.q ? [{ label: `“${query.q}”`, href: without(basePath, searchParams, "q") }] : []),
@@ -164,7 +169,7 @@ export async function CatalogView({ category, searchParams }: { category?: strin
     <div className="container-page grid gap-10 py-10 lg:grid-cols-[280px_1fr] lg:py-14">
       {/* Masaüstü filtre */}
       <aside className="hidden lg:block" aria-label="Filtreler">
-        <FilterForm action={basePath} className="sticky top-32">
+        <FilterForm key={stateKey} action={basePath} className="sticky top-32">
           {filters}
         </FilterForm>
       </aside>
@@ -183,7 +188,7 @@ export async function CatalogView({ category, searchParams }: { category?: strin
                   Temizle
                 </Link>
               </div>
-              <FilterForm action={basePath}>
+              <FilterForm key={stateKey} action={basePath}>
                 {filters}
                 <button type="submit" className="btn-primary sticky bottom-0 mt-6 w-full">
                   {products.length} ürünü göster
@@ -196,18 +201,18 @@ export async function CatalogView({ category, searchParams }: { category?: strin
             <strong className="font-medium text-ink">{products.length}</strong> ürün
           </p>
 
-          <form action={basePath} role="search" className="relative ml-auto min-w-0 flex-1 sm:max-w-xs">
+          <Form action={basePath} role="search" className="relative ml-auto min-w-0 flex-1 sm:max-w-xs">
             {Object.entries(searchParams).flatMap(([k, v]) =>
               k === "q" ? [] : many(v).map((val) => <input key={`${k}-${val}`} type="hidden" name={k} value={val} />),
             )}
             <label htmlFor="catalog-q" className="sr-only">
               Katalogda ara
             </label>
-            <input id="catalog-q" name="q" type="search" defaultValue={query.q} placeholder="Ara…" className="field rounded-full pl-10" />
+            <input key={query.q} id="catalog-q" name="q" type="search" defaultValue={query.q} placeholder="Ara…" className="field rounded-full pl-10" />
             <Icon name="search" className="pointer-events-none absolute left-3.5 top-2.5 size-5 text-ink-soft" />
-          </form>
+          </Form>
 
-          <FilterForm action={basePath} className="flex items-center gap-2">
+          <FilterForm key={stateKey} action={basePath} className="flex items-center gap-2">
             {Object.entries(searchParams).flatMap(([k, v]) =>
               k === "sirala" ? [] : many(v).map((val) => <input key={`${k}-${val}`} type="hidden" name={k} value={val} />),
             )}

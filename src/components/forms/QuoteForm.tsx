@@ -2,16 +2,21 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { submitQuote } from "@/app/actions";
 import { useQuote } from "@/components/quote/QuoteProvider";
 import { unitLabel } from "@/lib/pricing";
-import { customerTypes } from "@/lib/validation";
+import { customerTypes, quoteSchema } from "@/lib/validation";
 import { Consent, Field, FormStatus } from "./Field";
 import { useLeadForm } from "./useLeadForm";
 
 export function QuoteForm() {
   const { items, ready, setQty, remove, clear } = useQuote();
-  const { state, onSubmit, pending } = useLeadForm(submitQuote);
+  const { state, onSubmit, pending } = useLeadForm("teklif", quoteSchema, "Teklif talebiniz hazır; en kısa sürede dönüş yapacağız.", (raw) => {
+    let parsedItems: unknown = [];
+    try {
+      parsedItems = JSON.parse(String(raw.items ?? "[]"));
+    } catch {}
+    return { ...raw, items: parsedItems };
+  });
 
   useEffect(() => {
     if (state?.ok) clear();

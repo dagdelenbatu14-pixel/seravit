@@ -1,14 +1,13 @@
 "use client";
 
-import { submitDealer } from "@/app/actions";
-import { customerTypes } from "@/lib/validation";
+import { customerTypes, dealerSchema } from "@/lib/validation";
 import { Consent, Field, FormStatus } from "./Field";
 import { useLeadForm } from "./useLeadForm";
 
 const businessTypes = ["bayi", "proje", "isletme"] as const;
 
 export function DealerForm() {
-  const { state, onSubmit, pending } = useLeadForm(submitDealer);
+  const { state, onSubmit, pending } = useLeadForm("bayi", dealerSchema, "Başvurunuz hazır; satış ekibimiz sizinle iletişime geçecek.");
 
   if (state?.ok) return <FormStatus state={state} />;
 

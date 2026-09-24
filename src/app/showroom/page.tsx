@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AppointmentForm } from "@/components/forms/AppointmentForm";
+import { Suspense } from "react";
+import { AppointmentForm, AppointmentFormFromUrl } from "@/components/forms/AppointmentForm";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { GroutGrid, Texture } from "@/components/product/TileVisual";
 import { Icon, type IconName } from "@/components/ui/Icon";
@@ -23,8 +24,7 @@ const steps: { icon: IconName; title: string; text: string }[] = [
   { icon: "truck", title: "Teslimat", text: "Adrese veya şantiyeye paletli teslim; uygulama ekibi önerisi." },
 ];
 
-export default async function ShowroomPage({ searchParams }: PageProps<"/showroom">) {
-  const { tip } = await searchParams;
+export default async function ShowroomPage() {
   const [facets, bath] = await Promise.all([getFacets({ category: "seramik", showroom: true }), getRootCategories("banyo")]);
   const { address } = siteConfig;
 
@@ -150,7 +150,9 @@ export default async function ShowroomPage({ searchParams }: PageProps<"/showroo
             </div>
           </div>
           <div className="rounded-3xl border border-line bg-white p-6 md:p-10">
-            <AppointmentForm defaultType={tip === "kesif" ? "kesif" : "showroom"} />
+            <Suspense fallback={<AppointmentForm />}>
+              <AppointmentFormFromUrl />
+            </Suspense>
           </div>
         </div>
       </section>

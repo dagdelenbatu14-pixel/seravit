@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { CatalogView } from "@/components/product/CatalogView";
+import { getCatalog } from "@/lib/catalog";
 
 export const metadata: Metadata = {
   title: "Ürünler",
@@ -8,23 +9,18 @@ export const metadata: Metadata = {
   alternates: { canonical: "/urunler" },
 };
 
-export default async function ProductsPage({ searchParams }: PageProps<"/urunler">) {
-  const sp = await searchParams;
-  const bath = sp.dunya === "banyo";
+export default async function ProductsPage() {
+  const data = await getCatalog();
   return (
     <>
       <PageHeader
         eyebrow="Katalog"
-        title={bath ? "Banyo Ürünleri" : "Tüm Ürünler"}
-        lead={
-          bath
-            ? "Vitrifiye, armatür, banyo mobilyası ve aksesuarlar."
-            : "Showroom'umuzda sergilenen ve tedarik ettiğimiz tüm ürün grupları."
-        }
+        title="Ürünler"
+        lead="Showroom'umuzda sergilenen ve tedarik ettiğimiz tüm ürün grupları."
         crumbs={[{ label: "Ürünler" }]}
-        texture={bath ? undefined : "hero-viola"}
+        texture="hero-viola"
       />
-      <CatalogView searchParams={sp} />
+      <CatalogView data={data} />
     </>
   );
 }

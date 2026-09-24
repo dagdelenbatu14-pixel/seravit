@@ -1,12 +1,13 @@
 "use client";
 
 import { useRef } from "react";
+import Form from "next/form";
 
 /** Filtre formu: seçim değişince otomatik gönderir (JS yoksa "Uygula" düğmesi çalışır). */
 export function FilterForm({ action, children, className }: { action: string; children: React.ReactNode; className?: string }) {
   const ref = useRef<HTMLFormElement>(null);
   return (
-    <form
+    <Form
       ref={ref}
       action={action}
       className={className}
@@ -16,6 +17,6 @@ export function FilterForm({ action, children, className }: { action: string; ch
       }}
     >
       {children}
-    </form>
+    </Form>
   );
 }

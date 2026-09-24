@@ -1,6 +1,7 @@
 import Image from "next/image";
 import type { Product } from "@/lib/types";
 import { ProductIllustration } from "./ProductIllustration";
+import { asset } from "@/lib/asset";
 
 /** "60×120" → derz ızgarası (240×240 cm'lik bir pencere varsayımıyla) */
 function gridFor(size?: string) {
@@ -24,7 +25,7 @@ export function Texture({
   priority?: boolean;
   className?: string;
 }) {
-  return <Image src={`/textures/${name}.webp`} alt={alt} fill sizes={sizes} loading={priority ? "eager" : undefined} className={`object-cover ${className}`} />;
+  return <Image src={asset(`/textures/${name}.webp`)} alt={alt} fill sizes={sizes} loading={priority ? "eager" : undefined} className={`object-cover ${className}`} />;
 }
 
 /** Karo derz çizgileri (üstte katman) */
@@ -72,7 +73,7 @@ export function TileVisual({
   return (
     <div className={`relative overflow-hidden bg-linen ${className}`}>
       {photo ? (
-        <Image src={photo} alt={product.name} fill sizes={sizes} loading={priority ? "eager" : undefined} className="object-cover" />
+        <Image src={asset(photo)} alt={product.name} fill sizes={sizes} loading={priority ? "eager" : undefined} className="object-cover" />
       ) : product.texture ? (
         <>
           <div className={`absolute inset-0 transition-transform duration-700 ${mode === "closeup" ? "scale-150" : ""} ${hoverLaid ? "group-hover:scale-100" : ""}`}>
