@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { HeroSlider, type HeroSlide } from "@/components/home/HeroSlider";
+import { Intro } from "@/components/home/Intro";
 import { SwatchStack } from "@/components/home/SwatchStack";
 import { ProductCard } from "@/components/product/ProductCard";
 import { ProductIllustration } from "@/components/product/ProductIllustration";
@@ -67,6 +68,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <Intro />
       <HeroSlider slides={slides} />
 
       {/* İKİ DÜNYA (Bien) */}

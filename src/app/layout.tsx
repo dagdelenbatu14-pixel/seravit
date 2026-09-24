@@ -44,7 +44,15 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="tr" className={`${bodoni.variable} ${jost.variable}`}>
+    <html lang="tr" className={`${bodoni.variable} ${jost.variable}`} suppressHydrationWarning>
+      <head>
+        {/* Açılış animasyonu oturumda bir kez: tekrar ziyarette boyamadan önce gizle */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{if(sessionStorage.getItem("seravit:intro"))document.documentElement.dataset.intro="seen"}catch(e){}`,
+          }}
+        />
+      </head>
       <body className="flex min-h-dvh flex-col">
         <a href="#icerik" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-white focus:px-4 focus:py-2">
           İçeriğe geç

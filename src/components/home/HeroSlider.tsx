@@ -1,8 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Logo } from "@/components/brand/Logo";
 import { Icon } from "@/components/ui/Icon";
 import { asset } from "@/lib/asset";
 
@@ -21,28 +22,61 @@ export type HeroSlide = {
 };
 
 const DURATION = 7000;
+/** Açılış animasyonu oynarken ilk slayta eklenen süre */
+const INTRO_MS = 3000;
+
+/** Yükselen altın zerreler (sabit tohum) */
+const flecks = Array.from({ length: 18 }, (_, i) => ({
+  left: (i * 53) % 100,
+  bottom: (i * 17) % 40,
+  size: 2 + (i % 3),
+  dur: 7 + ((i * 7) % 6),
+  delay: -((i * 1.3) % 9),
+}));
 
 export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
-  const go = useCallback((i: number) => setIndex((i + slides.length) % slides.length), [slides.length]);
+  const [advanced, setAdvanced] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+  const go = useCallback(
+    (i: number) => {
+      setAdvanced(true);
+      setIndex((i + slides.length) % slides.length);
+    },
+    [slides.length],
+  );
 
   useEffect(() => {
     if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const t = setTimeout(() => go(index + 1), DURATION);
+    const introPlaying = !advanced && document.documentElement.dataset.intro !== "seen";
+    const t = setTimeout(() => go(index + 1), DURATION + (introPlaying ? INTRO_MS : 0));
     return () => clearTimeout(t);
-  }, [index, paused, go]);
+  }, [index, paused, go, advanced]);
+
+  /** İmleç konumu → CSS değişkenleri (ışık ve paralaks; yeniden render yok) */
+  const onPointerMove = (e: React.PointerEvent<HTMLElement>) => {
+    const el = sectionRef.current;
+    if (!el || e.pointerType === "touch") return;
+    const r = el.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width;
+    const y = (e.clientY - r.top) / r.height;
+    el.style.setProperty("--mx", `${x * 100}%`);
+    el.style.setProperty("--my", `${y * 100}%`);
+    el.style.setProperty("--px", `${(x - 0.5).toFixed(3)}`);
+    el.style.setProperty("--py", `${(y - 0.5).toFixed(3)}`);
+  };
 
   const slide = slides[index];
   const dark = slide.tone === "dark";
 
   return (
     <section
+      ref={sectionRef}
+      onPointerMove={onPointerMove}
       aria-roledescription="vitrin"
       aria-label="Öne çıkanlar"
       className="relative isolate h-[calc(100svh-113px)] min-h-[560px] max-h-[860px] overflow-hidden bg-night"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
     >
@@ -62,31 +96,75 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
                 : "bg-gradient-to-t from-paper/95 via-paper/70 to-paper/20 md:bg-gradient-to-r md:from-paper/90 md:via-paper/55 md:to-transparent"
             }`}
           />
+          {/* Karo duvarı derzleri */}
+          <div
+            aria-hidden
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `linear-gradient(90deg, ${s.tone === "dark" ? "rgba(255,255,255,.07)" : "rgba(255,255,255,.6)"} 1px, transparent 1px), linear-gradient(180deg, ${s.tone === "dark" ? "rgba(255,255,255,.07)" : "rgba(255,255,255,.6)"} 1px, transparent 1px)`,
+              backgroundSize: "clamp(160px, 16vw, 260px) clamp(320px, 32vw, 520px)",
+            }}
+          />
           {s.ink && (
-            <Image
-              src={asset("/brand/ink.webp")}
-              alt=""
-              width={900}
-              height={889}
-              loading={i === 0 ? "eager" : "lazy"}
-              className="pointer-events-none absolute -right-28 top-[4%] w-[85vw] max-w-none opacity-45 mix-blend-screen md:-right-24 md:top-1/2 md:w-[62vh] md:-translate-y-1/2 md:opacity-90 lg:right-[6%]"
-            />
+            <>
+              {/* Dev wordmark filigranı */}
+              <div aria-hidden className="pointer-events-none absolute -bottom-[6%] -right-[4%] w-[88vw] text-paper/[0.05] md:w-[70vw]">
+                <Logo ink={false} tagline={false} className="w-full" />
+              </div>
+              <div
+                className="pointer-events-none absolute inset-0 transition-transform duration-700 ease-out"
+                style={{ transform: "translate3d(calc(var(--px, 0) * -40px), calc(var(--py, 0) * -30px), 0)" }}
+              >
+                <Image
+                  src={asset("/brand/ink.webp")}
+                  alt=""
+                  width={900}
+                  height={889}
+                  loading={i === 0 ? "eager" : "lazy"}
+                  className="absolute -right-28 top-[4%] w-[85vw] max-w-none animate-[breathe_14s_ease-in-out_infinite] opacity-45 mix-blend-screen md:-right-24 md:top-1/2 md:w-[62vh] md:-translate-y-1/2 md:opacity-90 lg:right-[6%]"
+                />
+              </div>
+              {/* Yükselen altın zerreler */}
+              <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+                {flecks.map((f, k) => (
+                  <span
+                    key={k}
+                    className="absolute rounded-full bg-gold-soft shadow-[0_0_8px_1px_rgba(231,200,115,.6)]"
+                    style={{
+                      left: `${f.left}%`,
+                      bottom: `${f.bottom}%`,
+                      width: f.size,
+                      height: f.size,
+                      animation: `float-up ${f.dur}s linear ${f.delay}s infinite`,
+                    }}
+                  />
+                ))}
+              </div>
+            </>
           )}
+          {/* İmleci takip eden showroom ışığı */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 hidden md:block"
+            style={{
+              background: `radial-gradient(560px circle at var(--mx, 72%) var(--my, 42%), ${s.tone === "dark" ? "rgba(255,240,255,.10)" : "rgba(255,255,255,.35)"}, transparent 65%)`,
+            }}
+          />
         </div>
       ))}
 
       <div className="container-page relative flex h-full flex-col justify-end pb-24 md:justify-center md:pb-0">
-        <div key={index} className={`max-w-2xl space-y-6 ${dark ? "text-paper" : "text-ink"}`}>
+        <div key={index} className={`max-w-2xl space-y-6 ${dark ? "text-paper" : "text-ink"} ${advanced ? "" : "hero-first"}`}>
           <p className={`animate-fade-up text-[11px] font-medium uppercase tracking-(--tracking-brand) ${dark ? "text-gold-soft" : "text-amethyst-700"}`}>
             {slide.eyebrow}
           </p>
-          <h1 className="animate-fade-up text-5xl leading-[1.02] [animation-delay:120ms] md:text-7xl xl:text-[5.5rem]">
+          <h1 style={{ "--d": "120ms" } as React.CSSProperties} className="animate-fade-up text-5xl leading-[1.02] [animation-delay:120ms] md:text-7xl xl:text-[5.5rem]">
             {slide.title[0]}
             <em className={dark ? "text-amethyst-300" : "text-amethyst-700"}>{slide.title[1]}</em>
             {slide.title[2]}
           </h1>
-          <p className={`max-w-lg animate-fade-up text-lg [animation-delay:240ms] ${dark ? "text-paper/75" : "text-ink-soft"}`}>{slide.text}</p>
-          <div className="flex animate-fade-up flex-wrap gap-3 [animation-delay:360ms]">
+          <p style={{ "--d": "240ms" } as React.CSSProperties} className={`max-w-lg animate-fade-up text-lg [animation-delay:240ms] ${dark ? "text-paper/75" : "text-ink-soft"}`}>{slide.text}</p>
+          <div style={{ "--d": "360ms" } as React.CSSProperties} className="flex animate-fade-up flex-wrap gap-3 [animation-delay:360ms]">
             <Link href={slide.cta.href} className={dark ? "btn-light" : "btn-primary"}>
               {slide.cta.label}
               <Icon name="arrow-right" className="size-4" />
