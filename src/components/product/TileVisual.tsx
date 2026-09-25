@@ -3,6 +3,9 @@ import type { Product } from "@/lib/types";
 import { ProductIllustration } from "./ProductIllustration";
 import { asset } from "@/lib/asset";
 
+/** Fotoğrafında zaten derz / parke birleşimi olan dokular — üstüne ızgara çizilmez */
+const JOINTED = new Set(["mese-dogal", "zellige-blanc", "aegean-mozaik"]);
+
 /** "60×120" → derz ızgarası (240×240 cm'lik bir pencere varsayımıyla) */
 function gridFor(size?: string) {
   if (!size) return null;
@@ -29,8 +32,8 @@ export function Texture({
 }
 
 /** Karo derz çizgileri (üstte katman) */
-export function GroutGrid({ size, dark }: { size?: string; dark?: boolean }) {
-  const g = gridFor(size);
+export function GroutGrid({ size, dark, texture }: { size?: string; dark?: boolean; texture?: string }) {
+  const g = texture && JOINTED.has(texture) ? null : gridFor(size);
   if (!g) return null;
   const line = dark ? "rgba(0,0,0,.55)" : "rgba(255,255,255,.75)";
   const shade = dark ? "rgba(255,255,255,.06)" : "rgba(0,0,0,.08)";
@@ -80,7 +83,7 @@ export function TileVisual({
             <Texture name={product.texture} alt={product.name} sizes={sizes} priority={priority} />
           </div>
           <div className={`absolute inset-0 transition-opacity duration-500 ${mode === "laid" ? "opacity-100" : "opacity-0"} ${hoverLaid ? "group-hover:opacity-100" : ""}`}>
-            <GroutGrid size={product.size} dark={dark} />
+            <GroutGrid size={product.size} dark={dark} texture={product.texture} />
           </div>
         </>
       ) : product.icon ? (

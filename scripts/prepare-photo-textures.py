@@ -2,13 +2,14 @@
 Seravit — fotoğraf tabanlı mermer / traverten dokuları.
 
 Kaynak: ambientCG (https://ambientcg.com) — CC0 1.0 (kamu malı, ticari kullanım serbest,
-atıf zorunlu değil). Kullanılan malzemeler: Marble001, Marble006, Marble012, Onyx015, Travertine009.
+atıf zorunlu değil). Kullanılan malzemeler: Marble001, Marble006, Marble012, Onyx015, Travertine009,
+Concrete034, Concrete040, Concrete042A, Terrazzo012, Tiles020, Tiles133B, WoodFloor051.
 
 Kullanım:
   1) Her malzemenin 2K-JPG zip'ini indirip *_Color.jpg dosyalarını SRC klasörüne çıkarın:
-     https://ambientcg.com/get?file=Marble001_2K-JPG.zip  (Marble006, Marble012, Onyx015, Travertine009)
+     https://ambientcg.com/get?file=Marble001_2K-JPG.zip  (listedeki diğer malzemeler aynı biçimde)
   2) .venv/bin/python scripts/prepare-photo-textures.py <SRC klasörü>
-Çıktı: public/textures/*.webp (prosedürel sürümlerin üzerine yazar)
+Çıktı: public/textures/*.webp
 """
 import sys
 from pathlib import Path
@@ -130,6 +131,33 @@ def main():
     trav = grade(t9, sat=0.9, warm=0.01, contrast=1.04)
     save(trav, "travertino-beige", (1200, 1200))
     save(wide(trav, 0.4), "hero-travertino", (2048, 1152))
+
+    # ——— Beton / düz yüzeyler ———
+    c34 = load("Concrete034")
+    c34 = c34[:, (c34.shape[1] - c34.shape[0]) // 2 :][:, : c34.shape[0]] if c34.shape[1] > c34.shape[0] else c34
+    save(grade(c34, sat=0.15, warm=0.005, contrast=1.05, bright=-0.02), "beton-grey", (1200, 1200))
+    beyaz = grade(c34, sat=0.0, contrast=0.35, bright=0.36)
+    save(beyaz * rgb("#fbf9f5"), "mat-beyaz", (1200, 1200))
+    save(grade(load("Concrete042A"), sat=0.1, contrast=1.05, bright=-0.08), "antrasit", (1200, 1200))
+
+    # ——— Bodrum Stone: kumtaşı dokusu, sıcak açık bej ———
+    c40 = load("Concrete040")
+    bs = grade(c40, sat=0.35, contrast=0.9, bright=0.22)
+    save(bs * rgb("#fbf4ea"), "bodrum-stone", (1200, 1200))
+
+    # ——— Terrazzo ———
+    save(grade(load("Terrazzo012"), sat=0.95, warm=0.01, contrast=1.02, bright=0.02), "terrazzo-krem", (1200, 1200))
+
+    # ——— Meşe parke ———
+    save(grade(load("WoodFloor051"), sat=1.1, warm=0.03, contrast=1.05, bright=0.04), "mese-dogal", (1200, 1200))
+
+    # ——— Zellige: sırlı el yapımı beyaz karo, hafif krem ———
+    z = grade(load("Tiles133B"), sat=0.2, contrast=1.05, bright=0.02)
+    save(z * rgb("#fdf8ee"), "zellige-blanc", (1200, 1200))
+
+    # ——— Havuz mozaiği: cam mozaik, Ege mavisine çekilir ———
+    t20 = load("Tiles020")
+    save(np.clip(grade(t20, sat=1.2, contrast=1.08) * rgb("#e6f2ff"), 0, 1), "aegean-mozaik", (1200, 1200))
 
 
 if __name__ == "__main__":

@@ -72,12 +72,25 @@ Online ödeme yok — satış teklif → onay akışıyla ilerler (sektör stand
 
 ## Görseller
 
-- **Mermer ve traverten** (`calacatta-*`, `nero-marquina`, `statuario-grey`, `travertino-beige`, `hero-*`):
-  [ambientCG](https://ambientcg.com) gerçek taş fotoğrafları — **CC0** (ticari kullanım serbest, atıf gerekmez).
-  Kaynaklar: Marble001, Marble006, Marble012, Onyx015, Travertine009. Renk/damar işleme: `scripts/prepare-photo-textures.py`
-  (Calacatta Viola, Onyx015'in damarlarının ametist renk geçişine eşlenmesiyle üretildi).
-- **Diğer dokular** (beton, ahşap, zellige, mozaik, terrazzo): `scripts/generate-textures.py` ile prosedürel.
-- Ürüne `images: ["/urunler/xxx.jpg"]` eklendiğinde gerçek ürün fotoğrafı otomatik öne geçer.
+Tüm karo dokuları [ambientCG](https://ambientcg.com) gerçek malzeme fotoğraflarıdır — **CC0**
+(ticari kullanım serbest, atıf gerekmez). Renk / damar işleme: `scripts/prepare-photo-textures.py`.
+
+| Doku | Kaynak |
+|---|---|
+| calacatta-oro | Marble001 |
+| calacatta-viola, hero-viola | Onyx015 (damarlar ametist renk geçişine eşlendi) |
+| nero-marquina, hero-nero | Marble006 |
+| statuario-grey | Marble012 |
+| travertino-beige, hero-travertino | Travertine009 |
+| beton-grey, mat-beyaz | Concrete034 |
+| antrasit | Concrete042A |
+| bodrum-stone | Concrete040 |
+| terrazzo-krem | Terrazzo012 |
+| mese-dogal | WoodFloor051 |
+| zellige-blanc | Tiles133B |
+| aegean-mozaik | Tiles020 |
+
+Ürüne `images: ["/urunler/xxx.jpg"]` eklendiğinde gerçek ürün fotoğrafı otomatik öne geçer.
 
 ## Marka
 
