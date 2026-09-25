@@ -90,7 +90,20 @@ Tüm karo dokuları [ambientCG](https://ambientcg.com) gerçek malzeme fotoğraf
 | zellige-blanc | Tiles133B |
 | aegean-mozaik | Tiles020 |
 
-Ürüne `images: ["/urunler/xxx.jpg"]` eklendiğinde gerçek ürün fotoğrafı otomatik öne geçer.
+**Banyo ürün fotoğrafları** (`public/urunler/`) — hepsi **CC0**, [Openverse](https://openverse.org) üzerinden:
+
+| Ürün | Kaynak |
+|---|---|
+| Rimless Asma Klozet | [rawpixel #5903477](https://www.rawpixel.com/image/5903477) |
+| Oval Tezgâh Üstü Lavabo | [WordPress Photos — Michael Burridge](https://wordpress.org/photos/photo/251622a36c/) |
+| Lavabo Dolabı 80 cm Meşe | [rawpixel #6042742](https://www.rawpixel.com/image/6042742) |
+| Ankastre Duş Seti | rawpixel (Openverse 1ae747f0) |
+| Lavabo Bataryası — Altın | [StockSnap — Studio 7042](https://stocksnap.io/photo/taps-gold-WIFG1MZOKJ) |
+| Banyo Aksesuar Seti | [rawpixel #5941214](https://www.rawpixel.com/image/5941214) (kırpıldı) |
+| Flex Seramik Yapıştırıcı | [Wikimedia — Ekeleme Ijeoma, "Cements bags"](https://commons.wikimedia.org/w/index.php?curid=188549364) |
+| Derz Dolgu | ambientCG Tiles135A (yakın plan) |
+
+Bunlar temsilî görsellerdir; gerçek ürün fotoğrafları geldiğinde aynı dosya adlarıyla değiştirilmesi yeterli.
 
 ## Marka
 

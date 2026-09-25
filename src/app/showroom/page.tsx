@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AppointmentForm, AppointmentFormFromUrl } from "@/components/forms/AppointmentForm";
@@ -8,6 +9,7 @@ import { Icon, type IconName } from "@/components/ui/Icon";
 import { ArrowCircle, SectionTitle } from "@/components/ui/Section";
 import { fullAddress, siteConfig } from "@/config/site";
 import { getFacets, getRootCategories } from "@/lib/catalog";
+import { asset } from "@/lib/asset";
 import { lookLabel, lookTexture } from "@/lib/labels";
 
 export const metadata: Metadata = {
@@ -103,9 +105,15 @@ export default async function ShowroomPage() {
             </Link>
           ))}
           {bath.map((c) => (
-            <Link key={c.slug} href={`/urunler/${c.slug}?showroom=1`} className="group flex items-center justify-between rounded-2xl bg-linen p-5 hover:bg-mist">
-              <span className="font-display text-xl">{c.name}</span>
-              <ArrowCircle direction="up-right" className="size-9" />
+            <Link key={c.slug} href={`/urunler/${c.slug}?showroom=1`} className="group relative aspect-[4/3] overflow-hidden rounded-2xl bg-linen">
+              {c.image && (
+                <Image src={asset(c.image)} alt="" fill sizes="(min-width:1024px) 25vw, 50vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-night/70 to-transparent" />
+              <div className="absolute inset-x-5 bottom-4 flex items-end justify-between text-paper">
+                <p className="font-display text-2xl">{c.name}</p>
+                <ArrowCircle dark direction="up-right" className="size-9" />
+              </div>
             </Link>
           ))}
         </div>

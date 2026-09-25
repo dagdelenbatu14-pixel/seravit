@@ -45,6 +45,8 @@ export type Category = {
   /** Kart görseli: /textures/<texture>.webp */
   texture?: string;
   icon?: ProductIcon;
+  /** Kategori fotoğrafı (public/ altı yol) */
+  image?: string;
 };
 
 export type Collection = {

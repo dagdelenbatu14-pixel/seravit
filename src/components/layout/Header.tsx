@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Logo } from "@/components/brand/Logo";
 import { ProductIllustration } from "@/components/product/ProductIllustration";
@@ -6,6 +7,7 @@ import { QuoteBadge } from "@/components/quote/QuoteBadge";
 import { Icon } from "@/components/ui/Icon";
 import { hoursSummary, mainNav, siteConfig } from "@/config/site";
 import { getCollections, getFacets, getRootCategories } from "@/lib/catalog";
+import { asset } from "@/lib/asset";
 import { lookLabel, lookTexture, surfaceLabel, usageLabel } from "@/lib/labels";
 import { MobileMenu, type MobileSection } from "./MobileMenu";
 import Form from "next/form";
@@ -164,9 +166,14 @@ export async function Header() {
                         <ul className="grid grid-cols-4 gap-4">
                           {bathCats.map((c) => (
                             <li key={c.slug}>
-                              <Link href={`/urunler/${c.slug}`} className="group/c flex flex-col items-center gap-3 rounded-2xl bg-linen p-5 text-center text-sm hover:bg-mist">
-                                {c.icon && <ProductIllustration icon={c.icon} className="size-20 text-ink/70 transition-transform group-hover/c:scale-105" />}
-                                {c.name}
+                              <Link href={`/urunler/${c.slug}`} className="group/c relative block aspect-[4/5] overflow-hidden rounded-2xl bg-linen text-sm">
+                                {c.image ? (
+                                  <Image src={asset(c.image)} alt="" fill sizes="220px" className="object-cover transition-transform duration-700 group-hover/c:scale-105" />
+                                ) : (
+                                  c.icon && <ProductIllustration icon={c.icon} className="absolute inset-0 m-auto size-20 text-ink/70" />
+                                )}
+                                <span className="absolute inset-0 bg-gradient-to-t from-night/75 via-night/10 to-transparent" />
+                                <span className="absolute inset-x-4 bottom-4 font-medium text-paper">{c.name}</span>
                               </Link>
                             </li>
                           ))}

@@ -1,13 +1,14 @@
+import Image from "next/image";
 import Link from "next/link";
 import { HeroSlider, type HeroSlide } from "@/components/home/HeroSlider";
 import { Intro } from "@/components/home/Intro";
 import { SwatchStack } from "@/components/home/SwatchStack";
 import { ProductCard } from "@/components/product/ProductCard";
-import { ProductIllustration } from "@/components/product/ProductIllustration";
 import { GroutGrid, Texture } from "@/components/product/TileVisual";
 import { Carousel } from "@/components/ui/Carousel";
 import { Icon } from "@/components/ui/Icon";
 import { ArrowCircle, SectionTitle, TextLink } from "@/components/ui/Section";
+import { asset } from "@/lib/asset";
 import { getCollection, getFacets, getFeaturedProducts } from "@/lib/catalog";
 import { lookLabel, lookTexture, usageLabel, usageTexture } from "@/lib/labels";
 import type { Usage } from "@/lib/types";
@@ -86,19 +87,22 @@ export default async function HomePage() {
             <ArrowCircle dark />
           </div>
         </Link>
-        <Link href="/urunler?dunya=banyo" className="group relative flex min-h-[340px] flex-col justify-end overflow-hidden rounded-2xl bg-linen p-8 md:min-h-[420px]">
-          <div className="absolute inset-x-0 top-6 flex items-end justify-center gap-2 text-ink/60 md:top-10">
-            <ProductIllustration icon="dus" className="w-32 md:w-44" />
-            <ProductIllustration icon="lavabo" className="w-36 transition-transform duration-700 group-hover:-translate-y-2 md:w-52" />
-            <ProductIllustration icon="klozet" className="w-28 md:w-36" />
-          </div>
+        <Link href="/urunler?dunya=banyo" className="group relative flex min-h-[340px] flex-col justify-end overflow-hidden rounded-2xl p-8 text-paper md:min-h-[420px]">
+          <Image
+            src={asset("/urunler/lavabo-dolabi-80-mese.webp")}
+            alt=""
+            fill
+            sizes="(min-width:768px) 50vw, 100vw"
+            className="object-cover transition-transform duration-1000 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-night/80 via-night/20 to-transparent" />
           <div className="relative flex items-end justify-between gap-6">
             <div>
-              <p className="eyebrow text-amethyst-700">Seravit dünyası</p>
+              <p className="text-[11px] uppercase tracking-(--tracking-brand) text-gold-soft">Seravit dünyası</p>
               <h2 className="mt-2 text-4xl md:text-5xl">Banyo Ürünleri</h2>
-              <p className="mt-2 max-w-sm text-ink-soft">Vitrifiye, armatür, mobilya ve aksesuar.</p>
+              <p className="mt-2 max-w-sm text-paper/80">Vitrifiye, armatür, mobilya ve aksesuar.</p>
             </div>
-            <ArrowCircle />
+            <ArrowCircle dark />
           </div>
         </Link>
       </section>
