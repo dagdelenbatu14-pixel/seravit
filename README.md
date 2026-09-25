@@ -72,8 +72,12 @@ Online ödeme yok — satış teklif → onay akışıyla ilerler (sektör stand
 
 ## Görseller
 
-Gerçek fotoğraf gelene kadar `public/textures/*.webp` prosedürel karo dokuları kullanılır
-(`scripts/generate-textures.py`). Ürüne `images: ["/urunler/xxx.jpg"]` eklendiğinde fotoğraf otomatik öne geçer.
+- **Mermer ve traverten** (`calacatta-*`, `nero-marquina`, `statuario-grey`, `travertino-beige`, `hero-*`):
+  [ambientCG](https://ambientcg.com) gerçek taş fotoğrafları — **CC0** (ticari kullanım serbest, atıf gerekmez).
+  Kaynaklar: Marble001, Marble006, Marble012, Onyx015, Travertine009. Renk/damar işleme: `scripts/prepare-photo-textures.py`
+  (Calacatta Viola, Onyx015'in damarlarının ametist renk geçişine eşlenmesiyle üretildi).
+- **Diğer dokular** (beton, ahşap, zellige, mozaik, terrazzo): `scripts/generate-textures.py` ile prosedürel.
+- Ürüne `images: ["/urunler/xxx.jpg"]` eklendiğinde gerçek ürün fotoğrafı otomatik öne geçer.
 
 ## Marka
 

@@ -92,7 +92,7 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
           <div
             className={`absolute inset-0 ${
               s.tone === "dark"
-                ? "bg-gradient-to-t from-night/90 via-night/50 to-night/10 md:bg-gradient-to-r md:from-night/85 md:via-night/40 md:to-transparent"
+                ? "bg-gradient-to-t from-night/90 via-night/55 to-night/15 md:bg-gradient-to-r md:from-night/90 md:via-night/50 md:to-night/5"
                 : "bg-gradient-to-t from-paper/95 via-paper/70 to-paper/20 md:bg-gradient-to-r md:from-paper/90 md:via-paper/55 md:to-transparent"
             }`}
           />
