@@ -79,7 +79,7 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
       onPointerMove={onPointerMove}
       aria-roledescription="vitrin"
       aria-label="Öne çıkanlar"
-      className="relative isolate h-[calc(100svh-113px)] min-h-[560px] max-h-[860px] overflow-hidden bg-night"
+      className="relative isolate flex min-h-[max(560px,calc(100svh-113px))] flex-col overflow-hidden bg-night md:max-h-[900px]"
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
     >
@@ -164,12 +164,12 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
         </div>
       ))}
 
-      <div className="container-page relative flex h-full flex-col justify-end pb-24 md:justify-center md:pb-0">
-        <div key={index} className={`max-w-2xl space-y-6 ${dark ? "text-paper" : "text-ink"} ${advanced ? "" : "hero-first"}`}>
+      <div className="container-page relative flex flex-1 flex-col justify-end pb-6 pt-10 md:justify-center md:pt-12">
+        <div key={index} className={`max-w-2xl space-y-5 md:space-y-6 ${dark ? "text-paper" : "text-ink"} ${advanced ? "" : "hero-first"}`}>
           <p className={`animate-fade-up text-[11px] font-medium uppercase tracking-(--tracking-brand) ${dark ? "text-gold-soft" : "text-amethyst-700"}`}>
             {slide.eyebrow}
           </p>
-          <h1 style={{ "--d": "120ms" } as React.CSSProperties} className="animate-fade-up text-5xl leading-[1.02] [animation-delay:120ms] md:text-7xl xl:text-[5.5rem]">
+          <h1 style={{ "--d": "120ms" } as React.CSSProperties} className="animate-fade-up text-5xl leading-[1.02] [animation-delay:120ms] md:text-[clamp(3rem,8.2svh,5.5rem)]">
             {slide.title[0]}
             <em className={dark ? "text-amethyst-300" : "text-amethyst-700"}>{slide.title[1]}</em>
             {slide.title[2]}
@@ -190,8 +190,8 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
       </div>
 
       {/* Kontroller */}
-      <div className={`absolute inset-x-0 bottom-0 ${dark ? "text-paper" : "text-ink"}`}>
-        <div className="container-page flex items-end justify-between gap-6 pb-8">
+      <div className={`relative ${dark ? "text-paper" : "text-ink"}`}>
+        <div className="container-page flex items-end justify-between gap-6 pb-6 md:pb-8">
           <div className="flex items-center gap-5">
             <span className="font-display text-sm tabular-nums">
               {String(index + 1).padStart(2, "0")} <span className="opacity-40">/ {String(slides.length).padStart(2, "0")}</span>

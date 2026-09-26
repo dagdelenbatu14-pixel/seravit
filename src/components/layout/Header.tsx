@@ -39,7 +39,7 @@ export async function Header() {
     <header className="sticky top-0 z-40">
       {/* Duyuru çubuğu — geniş ekranda tek satır, dar ekranda aynı içerik kayan şerit olarak */}
       <div className="bg-night text-xs text-paper/80">
-        <div className="container-page hidden min-h-9 items-center justify-between gap-6 xl:flex">
+        <div className="container-page hidden min-h-9 items-center justify-between gap-6 whitespace-nowrap min-[1400px]:flex">
           <p className="flex items-center gap-2">
             <Icon name="pin" className="size-3.5" />
             {siteConfig.address.locality}, {siteConfig.address.district}
@@ -66,7 +66,7 @@ export async function Header() {
           </div>
         </div>
 
-        <div className="overflow-hidden motion-reduce:overflow-x-auto xl:hidden">
+        <div className="overflow-hidden motion-reduce:overflow-x-auto min-[1400px]:hidden">
           <div className="flex w-max animate-marquee hover:[animation-play-state:paused] motion-reduce:animate-none">
             {[0, 1].map((copy) => (
               <ul key={copy} aria-hidden={copy === 1} className="flex min-h-9 shrink-0 items-center gap-7 pr-7 whitespace-nowrap">
