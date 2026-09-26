@@ -103,6 +103,9 @@ Tüm karo dokuları [ambientCG](https://ambientcg.com) gerçek malzeme fotoğraf
 | Flex Seramik Yapıştırıcı | [Wikimedia — Ekeleme Ijeoma, "Cements bags"](https://commons.wikimedia.org/w/index.php?curid=188549364) |
 | Derz Dolgu | ambientCG Tiles135A (yakın plan) |
 
+**Vitrin fotoğrafları** (`public/hero/`, CC0): banyo — [rawpixel #5922508](https://www.rawpixel.com/image/5922508),
+taş villa — [rawpixel #6023165](https://www.rawpixel.com/image/6023165) (1024 px kaynaktan büyütüldü).
+
 Bunlar temsilî görsellerdir; gerçek ürün fotoğrafları geldiğinde aynı dosya adlarıyla değiştirilmesi yeterli.
 
 ## Marka
@@ -112,7 +115,7 @@ Fontlar: Bodoni Moda (başlık, logodaki didone serif), Jost (metin, geniş aral
 
 ## Yapılacaklar
 
-- [ ] `config/site.ts` gerçek adres, telefon, WhatsApp, koordinat
+- [ ] `config/site.ts` gerçek adres, e-posta, koordinat (telefon/WhatsApp: +90 533 674 45 48 ✓)
 - [x] Referans sitelere göre tasarım (Güral, VitrA, Qua, Bien)
 - [ ] Gerçek ürün ve showroom fotoğrafları
 - [ ] Ana sayfa "Profesyonellere özel" rakamlarını doğrulama

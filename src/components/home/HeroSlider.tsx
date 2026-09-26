@@ -8,7 +8,10 @@ import { Icon } from "@/components/ui/Icon";
 import { asset } from "@/lib/asset";
 
 export type HeroSlide = {
+  /** Doku adı (public/textures) — `image` yoksa arka plan */
   texture: string;
+  /** Fotoğraf arka plan (public/ altı yol); varsa dokunun yerine geçer */
+  image?: string;
   tone: "dark" | "light";
   eyebrow: string;
   /** [önce, italik vurgu, sonra] */
@@ -87,16 +90,19 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
           className={`absolute inset-0 transition-opacity duration-1000 ${i === index ? "opacity-100" : "opacity-0"}`}
         >
           <div className={`absolute inset-0 ${i === index ? "animate-kenburns" : ""}`}>
-            <Image src={asset(`/textures/${s.texture}.webp`)} alt="" fill preload={i === 0} sizes="100vw" className="object-cover" />
+            <Image src={asset(s.image ?? `/textures/${s.texture}.webp`)} alt="" fill preload={i === 0} sizes="100vw" className="object-cover" />
           </div>
           <div
             className={`absolute inset-0 ${
               s.tone === "dark"
                 ? "bg-gradient-to-t from-night/90 via-night/55 to-night/15 md:bg-gradient-to-r md:from-night/90 md:via-night/50 md:to-night/5"
-                : "bg-gradient-to-t from-paper/95 via-paper/70 to-paper/20 md:bg-gradient-to-r md:from-paper/90 md:via-paper/55 md:to-transparent"
+                : s.image
+                  ? "bg-gradient-to-t from-paper/95 via-paper/60 to-transparent md:bg-gradient-to-r md:from-paper/85 md:via-paper/35 md:to-transparent"
+                  : "bg-gradient-to-t from-paper/95 via-paper/70 to-paper/20 md:bg-gradient-to-r md:from-paper/90 md:via-paper/55 md:to-transparent"
             }`}
           />
-          {/* Karo duvarı derzleri */}
+          {/* Karo duvarı derzleri (yalnız doku arka planlarda) */}
+          {!s.image && (
           <div
             aria-hidden
             className="absolute inset-0"
@@ -105,10 +111,11 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
               backgroundSize: "clamp(160px, 16vw, 260px) clamp(320px, 32vw, 520px)",
             }}
           />
+          )}
           {s.ink && (
             <>
               {/* Dev wordmark filigranı */}
-              <div aria-hidden className="pointer-events-none absolute -bottom-[6%] -right-[4%] w-[88vw] text-paper/[0.05] md:w-[70vw]">
+              <div aria-hidden className="pointer-events-none absolute -bottom-[6%] -right-[4%] w-[88vw] text-paper/[0.16] md:w-[70vw]">
                 <Logo ink={false} tagline={false} className="w-full" />
               </div>
               <div

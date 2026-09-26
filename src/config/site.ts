@@ -13,9 +13,9 @@ export const siteConfig = {
   currency: "TRY",
 
   contact: {
-    phone: "+90 5XX XXX XX XX", // TODO
-    phoneHref: "tel:+900000000000", // TODO
-    whatsapp: "900000000000", // TODO: ülke koduyla, boşluksuz
+    phone: "+90 533 674 45 48",
+    phoneHref: "tel:+905336744548",
+    whatsapp: "905336744548",
     email: "info@seravit.com.tr", // TODO
   },
 
