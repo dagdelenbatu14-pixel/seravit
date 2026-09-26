@@ -115,8 +115,12 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
           {s.ink && (
             <>
               {/* Dev wordmark filigranı */}
-              <div aria-hidden className="pointer-events-none absolute left-[4%] top-[4%] w-[92vw] text-paper/[0.22] md:left-auto md:top-auto md:-bottom-[6%] md:-right-[4%] md:w-[70vw]">
-                <Logo ink={false} tagline={false} className="w-full" />
+              <div
+                aria-hidden
+                className="pointer-events-none absolute left-[5%] top-[5%] w-[90vw] text-paper/90 md:left-auto md:right-[5%] md:top-auto md:bottom-[15%] md:w-[42vw]"
+                style={{ filter: "drop-shadow(0 2px 10px rgba(0,0,0,.75)) drop-shadow(0 0 1px rgba(0,0,0,.9))" }}
+              >
+                <Logo ink={false} tagline={false} className="w-full [&_path]:stroke-gold-soft/70 [&_path]:[stroke-width:1.2]" />
               </div>
               <div
                 className="pointer-events-none absolute inset-0 transition-transform duration-700 ease-out"
