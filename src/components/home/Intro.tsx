@@ -4,14 +4,14 @@ import { useEffect, useState } from "react";
 import { INK_RECT, WORDMARK_PATHS } from "@/components/brand/logo-paths";
 import { asset } from "@/lib/asset";
 
-const TOTAL_MS = 3600;
+const TOTAL_MS = 4400;
 const TILES = 24; // mobil 3×8, masaüstü 6×4
 
 /** Altın zerreler (sabit tohum → sunucu/istemci aynı çıktı) */
 const sparks = Array.from({ length: 14 }, (_, i) => {
   const a = (i * 137.5 * Math.PI) / 180;
   const r = 18 + ((i * 29) % 30);
-  return { x: 50 + Math.cos(a) * r, y: 50 + Math.sin(a) * r * 0.7, d: 1100 + ((i * 97) % 900), s: 2 + (i % 3) };
+  return { x: 50 + Math.cos(a) * r, y: 50 + Math.sin(a) * r * 0.7, d: 800 + ((i * 97) % 1200), s: 2 + (i % 3) };
 });
 
 /**
@@ -56,7 +56,7 @@ export function Intro() {
       </div>
 
       <div className="intro-brand absolute inset-0 flex flex-col items-center justify-center gap-6 px-6 text-paper">
-        <div className="relative w-[min(86vw,720px)]">
+        <div className="relative w-[min(94vw,760px)]">
           {sparks.map((p, i) => (
             <span
               key={i}
@@ -76,12 +76,12 @@ export function Intro() {
             />
             <g className="intro-word">
               {WORDMARK_PATHS.map((d, i) => (
-                <path key={i} d={d} pathLength={1} style={{ animationDelay: `${550 + i * 90}ms, ${1500 + i * 40}ms` }} />
+                <path key={i} d={d} pathLength={1} style={{ animationDelay: `${300 + i * 70}ms, ${1100 + i * 40}ms` }} />
               ))}
             </g>
           </svg>
         </div>
-        <p className="intro-tag text-center text-[11px] uppercase text-paper/80 md:text-sm">Seramik · Vitrifiye · Bodrum</p>
+        <p className="intro-tag text-center text-xs uppercase text-paper/85 md:text-sm">Seramik · Vitrifiye · Bodrum</p>
       </div>
 
       <button

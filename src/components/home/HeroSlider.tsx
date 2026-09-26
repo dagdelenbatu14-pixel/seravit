@@ -26,7 +26,7 @@ export type HeroSlide = {
 
 const DURATION = 7000;
 /** Açılış animasyonu oynarken ilk slayta eklenen süre */
-const INTRO_MS = 3000;
+const INTRO_MS = 3600;
 
 /** Yükselen altın zerreler (sabit tohum) */
 const flecks = Array.from({ length: 18 }, (_, i) => ({
@@ -115,7 +115,7 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
           {s.ink && (
             <>
               {/* Dev wordmark filigranı */}
-              <div aria-hidden className="pointer-events-none absolute -bottom-[6%] -right-[4%] w-[88vw] text-paper/[0.16] md:w-[70vw]">
+              <div aria-hidden className="pointer-events-none absolute left-[4%] top-[4%] w-[92vw] text-paper/[0.22] md:left-auto md:top-auto md:-bottom-[6%] md:-right-[4%] md:w-[70vw]">
                 <Logo ink={false} tagline={false} className="w-full" />
               </div>
               <div
