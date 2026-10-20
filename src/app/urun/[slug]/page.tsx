@@ -113,7 +113,7 @@ export default async function ProductPage({ params }: PageProps<"/urun/[slug]">)
             </div>
           ) : (
             product.images.length ? (
-              <PhotoGallery images={product.images} alt={product.name} />
+              <PhotoGallery images={product.images} alt={product.name} cover={product.unit === "m2"} />
             ) : (
               <TileVisual product={product} priority sizes="(min-width:1024px) 50vw, 100vw" className="aspect-square rounded-3xl" />
             )
@@ -144,7 +144,7 @@ export default async function ProductPage({ params }: PageProps<"/urun/[slug]">)
               ) : (
                 <p className="font-display text-3xl">Fiyat için teklif alın</p>
               )}
-              <p className="mt-1 text-xs text-ink-soft">KDV dahil perakende fiyat · Toptan fiyatlar miktara göre</p>
+              <p className="mt-1 text-xs text-ink-soft">{product.retailPrice ? "KDV dahil perakende fiyat · Toptan fiyatlar miktara göre" : "Güncel fiyat, stok ve toptan koşullar için teklif isteyin"}</p>
             </div>
             <div className="flex flex-col items-end gap-1 text-sm">
               <span className="flex items-center gap-2">

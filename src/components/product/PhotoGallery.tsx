@@ -5,12 +5,19 @@ import Image from "next/image";
 import { asset } from "@/lib/asset";
 
 /** Fotoğraflı ürünler için büyük görsel + küçük resimler */
-export function PhotoGallery({ images, alt }: { images: string[]; alt: string }) {
+export function PhotoGallery({ images, alt, cover = false }: { images: string[]; alt: string; cover?: boolean }) {
   const [active, setActive] = useState(0);
   return (
     <div className="space-y-3">
-      <div className="relative aspect-square overflow-hidden rounded-3xl bg-white">
-        <Image src={asset(images[active])} alt={alt} fill loading="eager" sizes="(min-width:1024px) 50vw, 100vw" className="object-contain" />
+      <div className={`relative overflow-hidden rounded-3xl ${cover ? "aspect-[4/3] bg-linen" : "aspect-square bg-white"}`}>
+        <Image
+          src={asset(images[active])}
+          alt={alt}
+          fill
+          loading="eager"
+          sizes="(min-width:1024px) 50vw, 100vw"
+          className={cover ? "object-cover" : "object-contain p-[4%]"}
+        />
       </div>
       {images.length > 1 && (
         <div className="flex gap-3">
