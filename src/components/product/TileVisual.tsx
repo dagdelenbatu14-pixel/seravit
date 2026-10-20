@@ -49,7 +49,7 @@ export function GroutGrid({ size, dark, texture }: { size?: string; dark?: boole
   );
 }
 
-type Visualizable = Pick<Product, "name" | "images" | "texture" | "icon" | "size" | "colorHex">;
+type Visualizable = Pick<Product, "name" | "images" | "texture" | "icon" | "size" | "colorHex"> & Partial<Pick<Product, "unit">>;
 
 /**
  * Ürün görseli. Öncelik: fotoğraf → prosedürel doku → teknik çizim.
@@ -76,7 +76,14 @@ export function TileVisual({
   return (
     <div className={`relative overflow-hidden bg-linen ${className}`}>
       {photo ? (
-        <Image src={asset(photo)} alt={product.name} fill sizes={sizes} loading={priority ? "eager" : undefined} className="object-cover" />
+        <Image
+          src={asset(photo)}
+          alt={product.name}
+          fill
+          sizes={sizes}
+          loading={priority ? "eager" : undefined}
+          className={product.unit && product.unit !== "m2" ? "bg-white object-contain p-[6%] transition-transform duration-500 group-hover:scale-105" : "object-cover"}
+        />
       ) : product.texture ? (
         <>
           <div className={`absolute inset-0 transition-transform duration-700 ${mode === "closeup" ? "scale-150" : ""} ${hoverLaid ? "group-hover:scale-100" : ""}`}>

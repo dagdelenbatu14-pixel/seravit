@@ -58,12 +58,19 @@ const bento: { usage: Usage; text: string; className: string }[] = [
 ];
 
 export default async function HomePage() {
-  const [featured, facets, viola, travertino] = await Promise.all([
+  const [featured, facets, viola, travertino, tileBrands, bathBrands] = await Promise.all([
     getFeaturedProducts(8),
     getFacets({ category: "seramik" }),
     getCollection("calacatta-viola"),
     getCollection("travertino"),
+    getFacets({ world: "karo" }),
+    getFacets({ world: "banyo" }),
   ]);
+  const own = (b: { value: string }) => b.value !== "Seravit Seçkisi";
+  const brandGroups = [
+    { title: "Seramik", world: "karo", items: tileBrands.brands.filter(own) },
+    { title: "Vitrifiye & Armatür", world: "banyo", items: bathBrands.brands.filter(own) },
+  ].filter((g) => g.items.length > 0);
   const stories = [
     { c: viola, size: "60×120", label: "Mermer koleksiyonu", subtitle: "Detaydaki incelik, bütündeki sükûnet." },
     { c: travertino, size: "60×60", label: "Doğal taş koleksiyonu", subtitle: "Ege'nin taş evlerinden ilham." },
@@ -91,7 +98,7 @@ export default async function HomePage() {
         </Link>
         <Link href="/urunler?dunya=banyo" className="group relative flex min-h-[340px] flex-col justify-end overflow-hidden rounded-2xl p-8 text-paper md:min-h-[420px]">
           <Image
-            src={asset("/urunler/lavabo-dolabi-80-mese.webp")}
+            src={asset("/hero/banyo-mermer.webp")}
             alt=""
             fill
             sizes="(min-width:768px) 50vw, 100vw"
@@ -108,6 +115,37 @@ export default async function HomePage() {
           </div>
         </Link>
       </section>
+
+      {/* MARKALAR */}
+      {brandGroups.length > 0 && (
+        <section className="border-y border-line bg-paper py-14" aria-labelledby="markalar">
+          <div className="container-page">
+            <p id="markalar" className="eyebrow mb-10 text-center">
+              Çalıştığımız markalar
+            </p>
+            <div className="grid gap-10 md:grid-cols-2 md:divide-x md:divide-line">
+              {brandGroups.map((g) => (
+                <div key={g.title} className="md:px-8">
+                  <p className="mb-5 text-center font-display text-2xl">{g.title}</p>
+                  <ul className="flex flex-wrap items-center justify-center gap-3">
+                    {g.items.map((b) => (
+                      <li key={b.value}>
+                        <Link
+                          href={`/urunler?dunya=${g.world}&marka=${encodeURIComponent(b.value)}`}
+                          className="group flex min-h-12 items-center gap-2 rounded-full border border-line px-5 transition-colors hover:border-ink hover:bg-ink hover:text-paper"
+                        >
+                          <span className="font-display text-xl tracking-wide">{b.value}</span>
+                          <span className="text-xs text-ink-soft group-hover:text-paper/60">{b.count}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* KOLEKSİYONLAR (Güral) */}
       <section className="overflow-hidden bg-linen py-20 md:py-28" aria-labelledby="koleksiyonlar">

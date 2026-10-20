@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/layout/PageHeader";
 import { ProductCard, ProductGrid } from "@/components/product/ProductCard";
+import { PhotoGallery } from "@/components/product/PhotoGallery";
 import { TileVisual } from "@/components/product/TileVisual";
 import { AddToQuote } from "@/components/quote/AddToQuote";
 import { JsonLd, productJsonLd } from "@/components/seo/JsonLd";
@@ -111,7 +112,11 @@ export default async function ProductPage({ params }: PageProps<"/urun/[slug]">)
               )}
             </div>
           ) : (
-            <TileVisual product={product} priority sizes="(min-width:1024px) 50vw, 100vw" className="aspect-square rounded-3xl" />
+            product.images.length ? (
+              <PhotoGallery images={product.images} alt={product.name} />
+            ) : (
+              <TileVisual product={product} priority sizes="(min-width:1024px) 50vw, 100vw" className="aspect-square rounded-3xl" />
+            )
           )}
           <p className="mt-3 text-xs text-ink-soft">
             Görseller temsilidir; gerçek renk ve dokuyu showroom&apos;da numune üzerinde inceleyebilirsiniz.

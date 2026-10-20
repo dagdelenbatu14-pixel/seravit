@@ -16,6 +16,7 @@ export function filterProducts(products: Product[], categories: Category[], quer
   const tree = query.category ? categoryTree(categories, query.category) : null;
   return products.filter((p) => {
     if (tree && skip !== "category" && !tree.includes(p.category)) return false;
+    if (skip !== "brands" && !has(query.brands, p.brand)) return false;
     if (query.world && categories.find((c) => c.slug === p.category)?.world !== query.world) return false;
     if (query.showroom && skip !== "showroom" && !p.inShowroom) return false;
     if (query.collection && skip !== "collection" && p.collection !== query.collection) return false;
@@ -48,6 +49,7 @@ export function sortProducts(list: Product[], sort: ProductQuery["sort"]) {
 
 export type FacetOption<T extends string = string> = { value: T; count: number };
 export type Facets = {
+  brands: FacetOption[];
   looks: FacetOption<Look>[];
   surfaces: FacetOption<Surface>[];
   sizes: FacetOption[];
@@ -65,6 +67,7 @@ export function computeFacets(products: Product[], categories: Category[], query
   };
   const sizeKey = (s: string) => s.split("×").reduce((a, b) => a * (parseFloat(b.replace(",", ".")) || 1), 1);
   return {
+    brands: count<string>("brands", (p) => [p.brand]).sort((a, b) => a.value.localeCompare(b.value, "tr")),
     looks: count<Look>("looks", (p) => [p.look]),
     surfaces: count<Surface>("surfaces", (p) => [p.surface]),
     sizes: count<string>("sizes", (p) => [p.size]).sort((a, b) => sizeKey(a.value) - sizeKey(b.value)),
@@ -90,6 +93,7 @@ export function parseCatalogParams(sp: SearchParams): Omit<ProductQuery, "catego
   const world = one(sp.dunya) as World | undefined;
   return {
     q: one(sp.q) || undefined,
+    brands: many(sp.marka),
     showroom: one(sp.showroom) === "1",
     looks: many(sp.gorunum) as Look[],
     surfaces: many(sp.yuzey) as Surface[],

@@ -70,6 +70,18 @@ Online ödeme yok — satış teklif → onay akışıyla ilerler (sektör stand
 | Qua | Tam genişlik vitrin slaytı + koleksiyon/ebat alt yazısı, bayi girişi bağlantısı | Hero, duyuru çubuğu |
 | Bien | Karolar / Banyo "iki dünya" kartları, kullanım alanı bento ızgarası, daire içinde ok düğmeleri | Ana sayfa |
 
+## Marka ürünleri
+
+`data/imports/<marka>.json` (format: `data/imports/SPEC.md`) derlemede `src/lib/catalog/imports.ts` ile okunur;
+görseller `public/urunler/<marka>/`. Seravit'in bu markalarla bayilik anlaşması var.
+
+| Bölüm | Markalar |
+|---|---|
+| Seramik | Bien, QUA, Güral (+ VitrA karo) |
+| Vitrifiye & Armatür | Bien, GPD, VitrA, Ideal Standard, GROHE, Isvea |
+
+Fiyat yok ("Fiyat için teklif alın"); stok durumu varsayılan "Siparişle temin".
+
 ## Görseller
 
 Tüm karo dokuları [ambientCG](https://ambientcg.com) gerçek malzeme fotoğraflarıdır — **CC0**

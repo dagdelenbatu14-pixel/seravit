@@ -63,6 +63,7 @@ function CatalogBody({ data, category, searchParams }: { data: CatalogData; cate
 
   const active: { label: string; href: string }[] = [
     ...(query.q ? [{ label: `“${query.q}”`, href: without(basePath, searchParams, "q") }] : []),
+    ...(query.brands ?? []).map((v) => ({ label: v, href: without(basePath, searchParams, "marka", v) })),
     ...(collection ? [{ label: collection.name, href: without(basePath, searchParams, "koleksiyon") }] : []),
     ...(query.world ? [{ label: query.world === "banyo" ? "Banyo ürünleri" : query.world === "karo" ? "Karolar" : "Yapı", href: without(basePath, searchParams, "dunya") }] : []),
     ...(query.looks ?? []).map((v) => ({ label: lookLabel[v] ?? v, href: without(basePath, searchParams, "gorunum", v) })),
@@ -109,6 +110,12 @@ function CatalogBody({ data, category, searchParams }: { data: CatalogData; cate
           ))}
         </ul>
       </FilterGroup>
+
+      {facets.brands.length > 1 && (
+        <FilterGroup title="Marka" open={!!query.brands?.length || facets.brands.length > 1}>
+          <ChipOptions name="marka" options={facets.brands.map((f) => ({ value: f.value, label: f.value, count: f.count }))} selected={query.brands} />
+        </FilterGroup>
+      )}
 
       {facets.looks.length > 0 && (
         <FilterGroup title="Görünüm" open>

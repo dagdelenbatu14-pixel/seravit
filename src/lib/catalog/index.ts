@@ -1,7 +1,11 @@
 import "server-only";
 import type { Category, Collection, Product, ProductQuery, World } from "@/lib/types";
-import { categories, collections, products } from "./data";
+import { categories, collections, products as sampleProducts } from "./data";
+import { importedProducts } from "./imports";
 import { categoryTree, computeFacets, filterProducts, sortProducts, type Facets } from "./query";
+
+/** Örnek (Seravit) ürünleri + marka içe aktarımları */
+const products = [...sampleProducts, ...importedProducts];
 
 /**
  * Katalog erişim katmanı. Sayfalar yalnızca bu fonksiyonları kullanır;
@@ -14,8 +18,16 @@ export async function getCatalog(): Promise<{ products: Product[]; categories: C
   return { products, categories, collections };
 }
 
+/** Kategori görseli yoksa o kategorideki ilk fotoğraflı (içe aktarılan) üründen alınır */
+const categoriesWithImages: Category[] = categories.map((c) => {
+  if (c.image || c.texture) return c;
+  const tree = categoryTree(categories, c.slug);
+  const hit = importedProducts.find((p) => tree.includes(p.category) && p.images.length);
+  return hit ? { ...c, image: hit.images[0] } : c;
+});
+
 export async function getCategories(): Promise<Category[]> {
-  return [...categories].sort((a, b) => a.order - b.order);
+  return [...categoriesWithImages].sort((a, b) => a.order - b.order);
 }
 
 export async function getRootCategories(world?: World): Promise<Category[]> {
@@ -23,7 +35,7 @@ export async function getRootCategories(world?: World): Promise<Category[]> {
 }
 
 export async function getCategory(slug: string): Promise<Category | undefined> {
-  return categories.find((c) => c.slug === slug);
+  return categoriesWithImages.find((c) => c.slug === slug);
 }
 
 export async function getChildCategories(parent: string): Promise<Category[]> {
@@ -46,8 +58,16 @@ export async function getFacets(query: ProductQuery): Promise<Facets> {
   return computeFacets(products, categories, query);
 }
 
-export async function getFeaturedProducts(limit = 8): Promise<Product[]> {
-  return products.filter((p) => p.featured).slice(0, limit);
+/** Öne çıkanlar: örnek koleksiyonlardan seçilenler + her markadan ilk ürün, karışık sırayla */
+export async function getFeaturedProducts(limit = 12): Promise<Product[]> {
+  const own = products.filter((p) => p.featured).slice(0, 4);
+  const perBrand = [...new Map(importedProducts.map((p) => [p.brand, p])).values()];
+  const out: Product[] = [];
+  for (let i = 0; out.length < limit && (i < own.length || i < perBrand.length); i++) {
+    if (perBrand[i]) out.push(perBrand[i]);
+    if (own[i] && out.length < limit) out.push(own[i]);
+  }
+  return out;
 }
 
 export async function getProduct(slug: string): Promise<Product | undefined> {

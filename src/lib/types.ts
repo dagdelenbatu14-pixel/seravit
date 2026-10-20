@@ -100,10 +100,13 @@ export type Product = {
   featured?: boolean;
   specs: Record<string, string>;
   tags: string[];
+  /** Marka sitesindeki ürün sayfası (içe aktarılan ürünler) */
+  sourceUrl?: string;
 };
 
 export type ProductQuery = {
   category?: string;
+  brands?: string[];
   world?: World;
   q?: string;
   showroom?: boolean;
