@@ -9,7 +9,7 @@ import { Carousel } from "@/components/ui/Carousel";
 import { Icon } from "@/components/ui/Icon";
 import { ArrowCircle, SectionTitle, TextLink } from "@/components/ui/Section";
 import { asset } from "@/lib/asset";
-import { getCollection, getFacets, getFeaturedProducts } from "@/lib/catalog";
+import { getCollections, getFacets, getFeaturedCollection, getFeaturedProducts, getProducts } from "@/lib/catalog";
 import { lookLabel, lookTexture, usageLabel, usageTexture } from "@/lib/labels";
 import type { Usage } from "@/lib/types";
 
@@ -22,7 +22,7 @@ const slides: HeroSlide[] = [
     text: "Seramik, porselen karo, vitrifiye ve armatür — seçkin koleksiyonlar tek çatı altında.",
     cta: { href: "/urunler/seramik", label: "Koleksiyonları keşfet" },
     cta2: { href: "/showroom#randevu", label: "Showroom randevusu" },
-    caption: "Nero Marquina · 60×120 Parlak",
+    caption: "Seramik · Vitrifiye · Armatür",
     ink: true,
   },
   {
@@ -58,22 +58,41 @@ const bento: { usage: Usage; text: string; className: string }[] = [
 ];
 
 export default async function HomePage() {
-  const [featured, facets, viola, travertino, tileBrands, bathBrands] = await Promise.all([
-    getFeaturedProducts(8),
+  const [featured, facets, marble, stone, tileBrands, bathBrands, outdoorList, allCollections, tiles] = await Promise.all([
+    getFeaturedProducts(12),
     getFacets({ category: "seramik" }),
-    getCollection("calacatta-viola"),
-    getCollection("travertino"),
+    getFeaturedCollection("mermer"),
+    getFeaturedCollection("dogal-tas"),
     getFacets({ world: "karo" }),
     getFacets({ world: "banyo" }),
+    getProducts({ category: "dis-mekan-havuz" }),
+    getCollections(),
+    getProducts({ world: "karo" }),
   ]);
+  /** Kullanım alanı kartları: o alana uygun, mekân fotoğrafı olan farklı karolar */
+  const usageCover = new Map<string, string>();
+  const used = new Set<string>();
+  for (const u of ["havuz", "dis-mekan", "banyo", "mutfak", "ic-mekan"]) {
+    const hit = tiles.find((p) => p.usage.includes(u as never) && p.images[1] && !used.has(p.images[1]));
+    if (hit) {
+      usageCover.set(u, hit.images[1]);
+      used.add(hit.images[1]);
+    }
+  }
+  const kesifCover = tiles.find((p) => p.usage.includes("banyo") && p.images[1] && !used.has(p.images[1]))?.images[1];
+  /** Her görünüm için kapak: o görünümdeki öne çıkan koleksiyonun mekân fotoğrafı */
+  const lookCover = new Map<string, string>();
+  for (const c of allCollections) if (c.look && !lookCover.has(c.look) && (c.roomImage ?? c.image)) lookCover.set(c.look, (c.roomImage ?? c.image)!);
   const own = (b: { value: string }) => b.value !== "Seravit Seçkisi";
+  const outdoor = outdoorList.find((p) => p.images.length > 1) ?? outdoorList[0];
+  const outdoorBrands = [...new Set(outdoorList.map((p) => p.brand))].join(", ").replace(/, ([^,]*)$/, " ve $1");
   const brandGroups = [
     { title: "Seramik", world: "karo", items: tileBrands.brands.filter(own) },
     { title: "Vitrifiye & Armatür", world: "banyo", items: bathBrands.brands.filter(own) },
   ].filter((g) => g.items.length > 0);
   const stories = [
-    { c: viola, size: "60×120", label: "Mermer koleksiyonu", subtitle: "Detaydaki incelik, bütündeki sükûnet." },
-    { c: travertino, size: "60×60", label: "Doğal taş koleksiyonu", subtitle: "Ege'nin taş evlerinden ilham." },
+    { c: marble, label: "Mermer koleksiyonu", subtitle: "Detaydaki incelik, bütündeki sükûnet." },
+    { c: stone, label: "Doğal taş koleksiyonu", subtitle: "Ege'nin taş evlerinden ilham." },
   ];
 
   return (
@@ -158,7 +177,11 @@ export default async function HomePage() {
                 href={`/urunler/seramik?gorunum=${l.value}`}
                 className="group relative block aspect-[3/4] overflow-hidden rounded-[28px] shadow-lg shadow-night/10"
               >
-                <Texture name={lookTexture[l.value]} sizes="(min-width:1024px) 23vw, 70vw" className="transition-transform duration-1000 group-hover:scale-110" />
+                {lookCover.get(l.value) ? (
+                  <Image src={asset(lookCover.get(l.value)!)} alt="" fill sizes="(min-width:1024px) 23vw, 70vw" className="object-cover transition-transform duration-1000 group-hover:scale-110" />
+                ) : (
+                  <Texture name={lookTexture[l.value]} sizes="(min-width:1024px) 23vw, 70vw" className="transition-transform duration-1000 group-hover:scale-110" />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-night/75 via-transparent to-transparent" />
                 <div className="absolute inset-x-6 bottom-6 flex items-end justify-between text-paper">
                   <div>
@@ -175,13 +198,14 @@ export default async function HomePage() {
 
       {/* KOLEKSİYON HİKÂYELERİ (Güral) */}
       <section aria-label="Öne çıkan koleksiyonlar" className="container-page space-y-24 py-24 md:space-y-32 md:py-32">
-        {stories.map(({ c, size, label, subtitle }, i) =>
+        {stories.map(({ c, label, subtitle }, i) =>
           c ? (
             <article key={c.slug} className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
               <div className={i % 2 ? "lg:order-2" : ""}>
-                <SwatchStack texture={c.texture} size={size} flip={i % 2 === 1} label={label} />
+                <SwatchStack room={c.roomImage} swatch={c.image} texture={c.texture} flip={i % 2 === 1} label={label} />
               </div>
               <div className="max-w-lg">
+                {c.brand && <p className="eyebrow mb-4">{c.brand}</p>}
                 <h2 className="text-5xl uppercase tracking-tight md:text-6xl">{c.name}</h2>
                 <span aria-hidden className="mt-5 block h-0.5 w-16 bg-ink" />
                 <p className="mt-6 font-display text-2xl italic text-ink-soft md:text-3xl">{subtitle}</p>
@@ -202,17 +226,21 @@ export default async function HomePage() {
             Bodrum
           </p>
           <div className="grid gap-10 lg:grid-cols-[1.6fr_1fr] lg:items-end">
-            <Link href="/urunler/dis-mekan-havuz" className="group relative block aspect-[16/10] overflow-hidden shadow-2xl">
-              <div className="absolute inset-0 grid grid-cols-[1fr_22%]">
-                <div className="relative">
-                  <Texture name="bodrum-stone" sizes="(min-width:1024px) 55vw, 100vw" className="transition-transform duration-1000 group-hover:scale-105" />
-                  <GroutGrid size="60×60" />
-                </div>
-                <div className="relative border-l-8 border-[#ddd6c8]">
-                  <Texture name="aegean-mozaik" sizes="20vw" />
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-[#0b4f78]/30 mix-blend-overlay" />
-                </div>
-              </div>
+            <Link href={outdoor ? `/urun/${outdoor.slug}` : "/urunler/dis-mekan-havuz"} className="group relative block aspect-[16/10] overflow-hidden bg-night-soft shadow-2xl">
+              {outdoor ? (
+                <Image
+                  src={asset(outdoor.images[1] ?? outdoor.images[0])}
+                  alt={outdoor.name}
+                  fill
+                  sizes="(min-width:1024px) 55vw, 100vw"
+                  className="object-cover transition-transform duration-1000 group-hover:scale-105"
+                />
+              ) : (
+                <Texture name="bodrum-stone" sizes="(min-width:1024px) 55vw, 100vw" />
+              )}
+              {outdoor && (
+                <span className="absolute bottom-4 left-4 rounded-full bg-paper/90 px-3 py-1 text-xs text-ink backdrop-blur">{outdoor.name}</span>
+              )}
             </Link>
             <div className="space-y-5">
               <p className="text-[11px] uppercase tracking-(--tracking-brand) text-gold-soft">Dış mekân & havuz</p>
@@ -220,8 +248,8 @@ export default async function HomePage() {
                 Havuz başından terasa, <em className="text-amethyst-300">tek dil.</em>
               </h2>
               <p className="text-paper/70">
-                20 mm kalınlıkta, R11 kaymaz ve dona dayanıklı Bodrum Stone; Ege mavisi cam mozaiklerle birlikte. Yazlık, villa ve
-                otel projeleri için stoktan tedarik.
+                20 mm kalınlıkta, kaymaz ve dona dayanıklı dış mekân karoları; havuz başı, teras ve bahçe için {outdoorBrands} serileri.
+                Yazlık, villa ve otel projelerine toplu tedarik.
               </p>
               <TextLink href="/urunler/dis-mekan-havuz" dark>
                 Dış mekân serileri
@@ -237,7 +265,11 @@ export default async function HomePage() {
         <div className="grid auto-rows-[220px] gap-4 md:grid-cols-4 md:auto-rows-[240px]">
           {bento.map((b) => (
             <Link key={b.usage} href={`/urunler/seramik?alan=${b.usage}`} className={`group relative overflow-hidden rounded-2xl ${b.className}`}>
-              <Texture name={usageTexture[b.usage]} sizes="(min-width:768px) 50vw, 100vw" className="transition-transform duration-1000 group-hover:scale-105" />
+              {usageCover.get(b.usage) ? (
+                <Image src={asset(usageCover.get(b.usage)!)} alt="" fill sizes="(min-width:768px) 50vw, 100vw" className="object-cover transition-transform duration-1000 group-hover:scale-105" />
+              ) : (
+                <Texture name={usageTexture[b.usage]} sizes="(min-width:768px) 50vw, 100vw" className="transition-transform duration-1000 group-hover:scale-105" />
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-night/70 via-night/10 to-transparent" />
               <div className="absolute inset-x-5 bottom-5 flex items-end justify-between gap-4 text-paper">
                 <div>
@@ -289,8 +321,11 @@ export default async function HomePage() {
             </div>
           </div>
           <div className="relative min-h-[360px]">
-            <Texture name="nero-marquina" sizes="(min-width:1024px) 45vw, 100vw" />
-            <GroutGrid size="60×120" dark />
+            {kesifCover ? (
+              <Image src={asset(kesifCover)} alt="" fill sizes="(min-width:1024px) 45vw, 100vw" className="object-cover" />
+            ) : (
+              <Texture name="nero-marquina" sizes="(min-width:1024px) 45vw, 100vw" />
+            )}
             <div className="absolute bottom-8 left-8 right-8 max-w-sm rounded-2xl bg-paper/95 p-5 shadow-2xl backdrop-blur md:left-auto">
               <p className="eyebrow mb-3">Metraj örneği</p>
               <dl className="space-y-1.5 text-sm">
@@ -303,7 +338,7 @@ export default async function HomePage() {
                   <dd>20,2 m²</dd>
                 </div>
                 <div className="flex justify-between gap-4 border-t border-line pt-2 font-medium">
-                  <dt>Nero Marquina 60×120</dt>
+                  <dt>60×120 porselen (1,44 m²/kutu)</dt>
                   <dd>15 kutu · 21,6 m²</dd>
                 </div>
               </dl>

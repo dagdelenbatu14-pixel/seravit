@@ -80,7 +80,7 @@ görseller `public/urunler/<marka>/`. Seravit'in bu markalarla bayilik anlaşmas
 | Seramik | Bien, QUA, Güral (+ VitrA karo) |
 | Vitrifiye & Armatür | Bien, GPD, VitrA, Ideal Standard, GROHE, Isvea |
 
-Fiyat yok ("Fiyat için teklif alın"); stok durumu varsayılan "Siparişle temin".
+Fiyat yok ("Fiyat için teklif alın"); stok durumu varsayılan "Siparişle temin". Sitedeki tüm ürünler bu markalardan; koleksiyonlar marka serilerinden türetilir.
 
 ## Görseller
 

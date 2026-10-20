@@ -52,10 +52,17 @@ export type Category = {
 export type Collection = {
   slug: string;
   name: string;
-  look: Look;
+  brand?: string;
+  look?: Look;
   tagline: string;
   story: string;
-  texture: string;
+  /** Doku adı (public/textures) — fotoğraf yoksa */
+  texture?: string;
+  /** Koleksiyon görseli (public/ altı yol) */
+  image?: string;
+  /** Mekân fotoğrafı (varsa) */
+  roomImage?: string;
+  count?: number;
 };
 
 export type Product = {

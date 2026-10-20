@@ -76,7 +76,7 @@ export default function WholesalePage() {
             <Texture name="bodrum-stone" sizes="(min-width:1024px) 50vw, 100vw" />
             <GroutGrid size="60×60" />
             <div className="absolute bottom-6 left-6 right-6 rounded-2xl bg-paper/95 p-5 shadow-xl backdrop-blur sm:right-auto sm:w-80">
-              <p className="eyebrow mb-3">Örnek kademe · Bodrum Stone</p>
+              <p className="eyebrow mb-3">Örnek kademe · 20 mm dış mekân karosu</p>
               <table className="w-full text-sm">
                 <tbody>
                   {[

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import type { Product } from "@/lib/types";
+import type { Collection, Product } from "@/lib/types";
 import { ProductIllustration } from "./ProductIllustration";
 import { asset } from "@/lib/asset";
 
@@ -100,4 +100,22 @@ export function TileVisual({
       ) : null}
     </div>
   );
+}
+
+/** Koleksiyon görseli: mekân fotoğrafı → ürün fotoğrafı → doku */
+export function CollectionPicture({
+  collection,
+  sizes = "50vw",
+  prefer = "room",
+  className = "",
+}: {
+  collection: Pick<Collection, "name" | "image" | "roomImage" | "texture">;
+  sizes?: string;
+  prefer?: "room" | "product";
+  className?: string;
+}) {
+  const src = prefer === "room" ? (collection.roomImage ?? collection.image) : (collection.image ?? collection.roomImage);
+  if (src) return <Image src={asset(src)} alt="" fill sizes={sizes} className={`object-cover ${className}`} />;
+  if (collection.texture) return <Texture name={collection.texture} sizes={sizes} className={className} />;
+  return null;
 }

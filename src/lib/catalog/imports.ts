@@ -2,7 +2,7 @@ import "server-only";
 import fs from "node:fs";
 import path from "node:path";
 import { z } from "zod";
-import type { Product } from "@/lib/types";
+import type { Collection, Product } from "@/lib/types";
 
 /**
  * Marka ürünleri — data/imports/<marka>.json (format: data/imports/SPEC.md).
@@ -46,6 +46,12 @@ const item = z.object({
   usage: z.array(z.enum(["banyo", "mutfak", "ic-mekan", "dis-mekan", "havuz"])).default([]),
 });
 
+const slugify = (s: string) =>
+  s
+    .toLocaleLowerCase("tr-TR")
+    .replace(/ı/g, "i").replace(/ğ/g, "g").replace(/ü/g, "u").replace(/ş/g, "s").replace(/ö/g, "o").replace(/ç/g, "c")
+    .normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
 function load(): Product[] {
   if (!fs.existsSync(DIR)) return [];
   const out: Product[] = [];
@@ -83,6 +89,7 @@ function load(): Product[] {
         name: d.name,
         brand: d.brand,
         category: d.category,
+        collection: d.collection ? `${slugify(d.brand)}-${slugify(d.collection)}` : undefined,
         summary: d.summary || d.description.split(". ")[0],
         description: d.description || d.summary,
         images,
@@ -106,3 +113,29 @@ function load(): Product[] {
 }
 
 export const importedProducts: Product[] = load();
+
+/** İçe aktarılan ürünlerden türetilen koleksiyonlar (marka + seri) */
+export const importedCollections: Collection[] = (() => {
+  const groups = new Map<string, Product[]>();
+  for (const p of importedProducts) if (p.collection) groups.set(p.collection, [...(groups.get(p.collection) ?? []), p]);
+  return [...groups.entries()].map(([slug, items]) => {
+    const first = items[0];
+    const name = first.specs.Seri ?? slug;
+    const isTile = first.unit === "m2";
+    const sizes = [...new Set(items.map((i) => i.size).filter(Boolean))];
+    const room = items.find((i) => i.images.length > 1)?.images[1];
+    return {
+      slug,
+      name,
+      brand: first.brand,
+      look: first.look,
+      tagline: `${first.brand} ${name} serisi`,
+      story: isTile
+        ? `${first.brand} ${name} serisi; ${sizes.length ? sizes.join(", ") + " cm ebatlarında" : "farklı ebatlarda"}, ${items.length} seçenekle Seravit'te.`
+        : `${first.brand} ${name} serisinden ${items.length} ürün Seravit'te.`,
+      image: first.images[0],
+      roomImage: room,
+      count: items.length,
+    };
+  });
+})();

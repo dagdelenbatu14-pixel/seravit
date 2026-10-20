@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Logo } from "@/components/brand/Logo";
 import { ProductIllustration } from "@/components/product/ProductIllustration";
-import { Texture } from "@/components/product/TileVisual";
+import { CollectionPicture, Texture } from "@/components/product/TileVisual";
 import { QuoteBadge } from "@/components/quote/QuoteBadge";
 import { Icon } from "@/components/ui/Icon";
 import { hoursSummary, mainNav, siteConfig } from "@/config/site";
@@ -148,10 +148,10 @@ export async function Header() {
                         </MegaColumn>
                         {signature && (
                           <Link href={`/urunler?koleksiyon=${signature.slug}`} className="group/card relative block min-h-56 overflow-hidden rounded-2xl">
-                            <Texture name={signature.texture} sizes="300px" className="transition-transform duration-700 group-hover/card:scale-105" />
+                            <CollectionPicture collection={signature} sizes="300px" className="transition-transform duration-700 group-hover/card:scale-105" />
                             <div className="absolute inset-0 bg-gradient-to-t from-night/80 via-night/10 to-transparent" />
                             <div className="absolute inset-x-5 bottom-5 text-paper">
-                              <p className="text-[11px] uppercase tracking-(--tracking-brand) text-gold-soft">Seravit imzası</p>
+                              <p className="text-[11px] uppercase tracking-(--tracking-brand) text-gold-soft">Öne çıkan · {signature.brand}</p>
                               <p className="font-display text-2xl">{signature.name}</p>
                             </div>
                           </Link>

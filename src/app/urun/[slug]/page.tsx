@@ -104,7 +104,7 @@ export default async function ProductPage({ params }: PageProps<"/urun/[slug]">)
               {collection && (
                 <div className="col-span-3 flex items-center justify-between gap-4 rounded-2xl bg-night px-6 py-5 text-paper">
                   <div>
-                    <p className="text-[11px] uppercase tracking-(--tracking-brand) text-gold-soft">{lookLabel[collection.look]} koleksiyonu</p>
+                    <p className="text-[11px] uppercase tracking-(--tracking-brand) text-gold-soft">{collection.look ? `${lookLabel[collection.look]} koleksiyonu` : collection.brand}</p>
                     <p className="font-display text-2xl">{collection.name}</p>
                   </div>
                   <p className="hidden max-w-xs text-sm text-paper/70 md:block">{collection.tagline}</p>

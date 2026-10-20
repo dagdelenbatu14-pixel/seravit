@@ -19,7 +19,7 @@ import type { Category, Collection, Product, ProductQuery } from "@/lib/types";
 import { Icon } from "@/components/ui/Icon";
 import { FilterForm } from "./FilterForm";
 import { ProductGrid } from "./ProductCard";
-import { Texture } from "./TileVisual";
+import { CollectionPicture, Texture } from "./TileVisual";
 
 export type CatalogData = { products: Product[]; categories: Category[]; collections: Collection[] };
 
@@ -259,10 +259,12 @@ function CatalogBody({ data, category, searchParams }: { data: CatalogData; cate
 
         {collection && (
           <div className="relative mb-10 overflow-hidden rounded-2xl bg-night p-8 text-paper">
-            <Texture name={collection.texture} sizes="60vw" className="opacity-50" />
+            <CollectionPicture collection={collection} sizes="60vw" className="opacity-50" />
             <div className="absolute inset-0 bg-gradient-to-r from-night via-night/70 to-transparent" />
             <div className="relative max-w-lg">
-              <p className="text-[11px] uppercase tracking-(--tracking-brand) text-gold-soft">{lookLabel[collection.look]} koleksiyonu</p>
+              <p className="text-[11px] uppercase tracking-(--tracking-brand) text-gold-soft">
+                {[collection.brand, collection.look && `${lookLabel[collection.look]} koleksiyonu`].filter(Boolean).join(" · ")}
+              </p>
               <h2 className="mt-2 text-4xl">{collection.name}</h2>
               <p className="mt-3 text-paper/75">{collection.story}</p>
             </div>

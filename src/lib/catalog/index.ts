@@ -1,11 +1,12 @@
 import "server-only";
 import type { Category, Collection, Product, ProductQuery, World } from "@/lib/types";
-import { categories, collections, products as sampleProducts } from "./data";
-import { importedProducts } from "./imports";
+import { categories, collections as sampleCollections, products as sampleProducts } from "./data";
+import { importedCollections, importedProducts } from "./imports";
 import { categoryTree, computeFacets, filterProducts, sortProducts, type Facets } from "./query";
 
 /** Örnek (Seravit) ürünleri + marka içe aktarımları */
 const products = [...sampleProducts, ...importedProducts];
+const collections = [...sampleCollections, ...importedCollections];
 
 /**
  * Katalog erişim katmanı. Sayfalar yalnızca bu fonksiyonları kullanır;
@@ -42,8 +43,15 @@ export async function getChildCategories(parent: string): Promise<Category[]> {
   return (await getCategories()).filter((c) => c.parent === parent);
 }
 
+/** Koleksiyonlar: mekân fotoğrafı olan ve çok seçenekli karo serileri önde */
 export async function getCollections(): Promise<Collection[]> {
-  return collections;
+  const score = (c: Collection) => (c.roomImage ? 100 : 0) + (c.look ? 50 : 0) + (c.count ?? 0);
+  return [...collections].sort((a, b) => score(b) - score(a));
+}
+
+/** Belirli görünümde (mermer, doğal taş…) öne çıkan koleksiyon; `exclude` markası hariç tutulabilir */
+export async function getFeaturedCollection(look: string, excludeBrand?: string): Promise<Collection | undefined> {
+  return (await getCollections()).find((c) => c.look === look && c.roomImage && c.brand !== excludeBrand);
 }
 
 export async function getCollection(slug: string): Promise<Collection | undefined> {
@@ -58,14 +66,14 @@ export async function getFacets(query: ProductQuery): Promise<Facets> {
   return computeFacets(products, categories, query);
 }
 
-/** Öne çıkanlar: örnek koleksiyonlardan seçilenler + her markadan ilk ürün, karışık sırayla */
+/** Öne çıkanlar: her markadan sırayla, karo ve banyo karışık */
 export async function getFeaturedProducts(limit = 12): Promise<Product[]> {
-  const own = products.filter((p) => p.featured).slice(0, 4);
-  const perBrand = [...new Map(importedProducts.map((p) => [p.brand, p])).values()];
+  const byBrand = new Map<string, Product[]>();
+  for (const p of products) byBrand.set(p.brand, [...(byBrand.get(p.brand) ?? []), p]);
+  const lists = [...byBrand.values()];
   const out: Product[] = [];
-  for (let i = 0; out.length < limit && (i < own.length || i < perBrand.length); i++) {
-    if (perBrand[i]) out.push(perBrand[i]);
-    if (own[i] && out.length < limit) out.push(own[i]);
+  for (let round = 0; out.length < limit && lists.some((l) => l[round]); round++) {
+    for (const l of lists) if (l[round] && out.length < limit) out.push(l[round]);
   }
   return out;
 }
