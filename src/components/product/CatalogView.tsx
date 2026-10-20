@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import Form from "next/form";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -271,7 +271,7 @@ function CatalogBody({ data, category, searchParams }: { data: CatalogData; cate
           </div>
         )}
 
-        <ProductGrid products={products} cols={3} />
+        <PagedGrid key={stateKey} products={products} />
       </div>
     </div>
   );
@@ -309,5 +309,27 @@ function ChipOptions({
         </label>
       ))}
     </div>
+  );
+}
+
+const PAGE = 24;
+
+/** Ürünleri sayfa sayfa göster (yüzlerce ürünle sayfa hafif kalsın) */
+function PagedGrid({ products }: { products: Product[] }) {
+  const [shown, setShown] = useState(PAGE);
+  return (
+    <>
+      <ProductGrid products={products.slice(0, shown)} cols={3} />
+      {products.length > shown && (
+        <div className="mt-12 flex flex-col items-center gap-3">
+          <p className="text-sm text-ink-soft">
+            {products.length} üründen {shown} tanesi gösteriliyor
+          </p>
+          <button type="button" onClick={() => setShown((n) => n + PAGE * 2)} className="btn-outline">
+            Daha fazla göster
+          </button>
+        </div>
+      )}
+    </>
   );
 }

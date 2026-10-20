@@ -15,8 +15,14 @@ const collections = [...sampleCollections, ...importedCollections];
 
 export type { Facets };
 
+/**
+ * Katalog sayfaları (istemci tarafı filtre) için hafif veri: açıklama, teknik tablo
+ * ve ek görseller çıkarılır — yüzlerce ürünle sayfa boyutu küçük kalsın.
+ */
 export async function getCatalog(): Promise<{ products: Product[]; categories: Category[]; collections: Collection[] }> {
-  return { products, categories, collections };
+  const slim = products.map((p) => ({ ...p, summary: "", description: "", specs: {}, features: [], images: p.images.slice(0, 1), sourceUrl: undefined }));
+  const slimCollections = collections.map((c) => ({ ...c, roomImage: undefined }));
+  return { products: slim, categories: categoriesWithImages, collections: slimCollections };
 }
 
 /** Kategori görseli yoksa o kategorideki ilk fotoğraflı (içe aktarılan) üründen alınır */

@@ -77,7 +77,7 @@ görseller `public/urunler/<marka>/`. Seravit'in bu markalarla bayilik anlaşmas
 
 | Bölüm | Markalar |
 |---|---|
-| Seramik | Bien, QUA, Güral (+ VitrA karo) |
+| Seramik | Bien (60×120, 60×60, 30×60, 80×80, 20×120), QUA (60×120, 20×120), Güral (60×120, 60×60, 80×80, 20×120, 120×240) — bu ebatlardaki tüm ürünler (+ VitrA karo) |
 | Vitrifiye & Armatür | Bien, GPD, VitrA, Ideal Standard, GROHE, Isvea |
 
 Fiyat yok ("Fiyat için teklif alın"); stok durumu varsayılan "Siparişle temin". Sitedeki tüm ürünler bu markalardan; koleksiyonlar marka serilerinden türetilir.

@@ -164,18 +164,24 @@ export default async function ProductPage({ params }: PageProps<"/urun/[slug]">)
             <div className="space-y-5">
               {colors.length > 0 && (
                 <VariantGroup label="Renk" current={product.colorName}>
-                  {colors.map((c) => (
-                    <Link
-                      key={c.value}
-                      href={`/urun/${c.slug}`}
-                      aria-current={c.active}
-                      title={c.value}
-                      className={`size-10 rounded-full ring-offset-2 transition ${c.active ? "ring-2 ring-ink" : "ring-1 ring-line hover:ring-ink/40"}`}
-                      style={{ background: c.hex }}
-                    >
-                      <span className="sr-only">{c.value}</span>
-                    </Link>
-                  ))}
+                  {colors.map((c) =>
+                    c.hex ? (
+                      <Link
+                        key={c.value}
+                        href={`/urun/${c.slug}`}
+                        aria-current={c.active}
+                        title={c.value}
+                        className={`size-10 rounded-full ring-offset-2 transition ${c.active ? "ring-2 ring-ink" : "ring-1 ring-line hover:ring-ink/40"}`}
+                        style={{ background: c.hex }}
+                      >
+                        <span className="sr-only">{c.value}</span>
+                      </Link>
+                    ) : (
+                      <VariantChip key={c.value} href={`/urun/${c.slug}`} active={c.active}>
+                        {c.value}
+                      </VariantChip>
+                    ),
+                  )}
                 </VariantGroup>
               )}
               {sizes.length > 0 && (
