@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
@@ -44,8 +45,9 @@ export function MobileMenu({ sections }: { sections: MobileSection[] }) {
         <Icon name="menu" />
       </button>
 
-      {open && (
-        <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Menü">
+      {open &&
+        createPortal(
+        <div className="fixed inset-0 z-[60] lg:hidden" role="dialog" aria-modal="true" aria-label="Menü">
           <div className="absolute inset-0 bg-night/50" onClick={() => setOpen(false)} />
           <div className="absolute inset-y-0 right-0 flex w-[min(24rem,100%)] flex-col bg-paper animate-fade-up">
             <div className="flex h-16 items-center justify-between border-b border-line px-5">
@@ -96,8 +98,9 @@ export function MobileMenu({ sections }: { sections: MobileSection[] }) {
               </Link>
             </div>
           </div>
-        </div>
-      )}
+        </div>,
+          document.body,
+        )}
     </>
   );
 }

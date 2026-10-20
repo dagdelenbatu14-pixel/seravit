@@ -21,6 +21,10 @@ export type HeroSlide = {
   cta2?: { href: string; label: string };
   /** Qua tarzı: sağ altta koleksiyon + ebat */
   caption: string;
+  /** Mobilde metin üstte (görselin alt kısmı görünsün) */
+  mobileTextTop?: boolean;
+  /** Arka planı karart/sadeleştir (0–1 görsel opaklığı) */
+  dim?: number;
   ink?: boolean;
 };
 
@@ -90,14 +94,24 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
           className={`absolute inset-0 transition-opacity duration-1000 ${i === index ? "opacity-100" : "opacity-0"}`}
         >
           <div className={`absolute inset-0 ${i === index ? "animate-kenburns" : ""}`}>
-            <Image src={asset(s.image ?? `/textures/${s.texture}.webp`)} alt="" fill preload={i === 0} sizes="100vw" className="object-cover" />
+            <Image
+              src={asset(s.image ?? `/textures/${s.texture}.webp`)}
+              alt=""
+              fill
+              preload={i === 0}
+              sizes="100vw"
+              className="object-cover"
+              style={s.dim ? { opacity: s.dim } : undefined}
+            />
           </div>
           <div
             className={`absolute inset-0 ${
               s.tone === "dark"
                 ? "bg-gradient-to-t from-night/90 via-night/55 to-night/15 md:bg-gradient-to-r md:from-night/90 md:via-night/50 md:to-night/5"
                 : s.image
-                  ? "bg-gradient-to-t from-paper/95 via-paper/60 to-transparent md:bg-gradient-to-r md:from-paper/85 md:via-paper/35 md:to-transparent"
+                  ? s.mobileTextTop
+                    ? "bg-gradient-to-b from-paper/95 via-paper/55 to-transparent md:bg-gradient-to-r md:from-paper/85 md:via-paper/35 md:to-transparent"
+                    : "bg-gradient-to-t from-paper/95 via-paper/60 to-transparent md:bg-gradient-to-r md:from-paper/85 md:via-paper/35 md:to-transparent"
                   : "bg-gradient-to-t from-paper/95 via-paper/70 to-paper/20 md:bg-gradient-to-r md:from-paper/90 md:via-paper/55 md:to-transparent"
             }`}
           />
@@ -117,7 +131,7 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
               {/* Dev wordmark filigranı */}
               <div
                 aria-hidden
-                className="pointer-events-none absolute left-[5%] top-[5%] w-[90vw] text-paper/90 md:left-auto md:right-[5%] md:top-auto md:bottom-[15%] md:w-[42vw]"
+                className="pointer-events-none absolute right-[5%] bottom-[15%] hidden w-[42vw] text-paper/90 md:block"
                 style={{ filter: "drop-shadow(0 2px 10px rgba(0,0,0,.75)) drop-shadow(0 0 1px rgba(0,0,0,.9))" }}
               >
                 <Logo ink={false} tagline={false} className="w-full [&_path]:stroke-gold-soft/70 [&_path]:[stroke-width:1.2]" />
@@ -164,7 +178,16 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
         </div>
       ))}
 
-      <div className="container-page relative flex flex-1 flex-col justify-end pb-6 pt-10 md:justify-center md:pt-12">
+      <div className={`container-page relative flex flex-1 flex-col pb-6 pt-8 md:justify-center md:pt-12 ${slide.mobileTextTop ? "justify-start" : "justify-end"}`}>
+        {slide.ink && (
+          <div
+            aria-hidden
+            className="mb-6 w-[72%] max-w-xs text-paper md:hidden"
+            style={{ filter: "drop-shadow(0 2px 10px rgba(0,0,0,.75))" }}
+          >
+            <Logo ink={false} tagline={false} className="w-full" />
+          </div>
+        )}
         <div key={index} className={`max-w-2xl space-y-5 md:space-y-6 ${dark ? "text-paper" : "text-ink"} ${advanced ? "" : "hero-first"}`}>
           <p className={`animate-fade-up text-[11px] font-medium uppercase tracking-(--tracking-brand) ${dark ? "text-gold-soft" : "text-amethyst-700"}`}>
             {slide.eyebrow}

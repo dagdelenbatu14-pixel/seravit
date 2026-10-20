@@ -23,6 +23,7 @@ const slides: HeroSlide[] = [
     cta: { href: "/urunler/seramik", label: "Koleksiyonları keşfet" },
     cta2: { href: "/showroom#randevu", label: "Showroom randevusu" },
     caption: "Seramik · Vitrifiye · Armatür",
+    dim: 0.45,
     ink: true,
   },
   {
@@ -30,6 +31,7 @@ const slides: HeroSlide[] = [
     image: "/hero/banyo-mermer.webp",
     tone: "light",
     eyebrow: "Banyo & vitrifiye",
+    mobileTextTop: true,
     title: ["Banyonuz, ", "baştan", " tasarlansın."],
     text: "Karo, vitrifiye, armatür ve mobilya — tek showroomda seçin, tek teklifle alın.",
     cta: { href: "/urunler?dunya=banyo", label: "Banyo ürünleri" },

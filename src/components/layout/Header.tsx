@@ -13,10 +13,12 @@ import { MobileMenu, type MobileSection } from "./MobileMenu";
 import Form from "next/form";
 
 export async function Header() {
-  const [facets, bathCats, collections] = await Promise.all([
+  const [facets, bathCats, collections, tileBrands, bathBrands] = await Promise.all([
     getFacets({ category: "seramik" }),
     getRootCategories("banyo"),
     getCollections(),
+    getFacets({ world: "karo" }),
+    getFacets({ world: "banyo" }),
   ]);
   const signature = collections[0];
 
@@ -32,6 +34,13 @@ export async function Header() {
     {
       label: "Banyo",
       links: [...bathCats.map((c) => ({ href: `/urunler/${c.slug}`, label: c.name })), { href: "/urunler/yapi-kimyasallari", label: "Yapı Kimyasalları" }],
+    },
+    {
+      label: "Markalar",
+      links: [
+        ...tileBrands.brands.map((b) => ({ href: `/urunler?dunya=karo&marka=${encodeURIComponent(b.value)}`, label: `${b.value} · Seramik` })),
+        ...bathBrands.brands.map((b) => ({ href: `/urunler?dunya=banyo&marka=${encodeURIComponent(b.value)}`, label: `${b.value} · Vitrifiye` })),
+      ],
     },
   ];
 
