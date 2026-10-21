@@ -4,13 +4,18 @@ import type { NextConfig } from "next";
  * GITHUB_PAGES=true ile derlenince statik site (out/) üretilir.
  * NEXT_PUBLIC_BASE_PATH: depo adı alt dizini (ör. "/seravit").
  *
- * Görseller: public/ altındaki dokular zaten boyutlandırılmış webp; yayın (Pages)
- * görsel optimize edici çalıştıramadığı için her ortamda doğrudan sunulur.
+ * Görseller: yayın (Pages) optimize edici çalıştıramadığı için özel yükleyici kullanılır;
+ * kartlarda ürün görsellerinin 640 px kopyaları (scripts/thumbs.mjs), büyüklerde orijinaller.
  */
 const pages = process.env.GITHUB_PAGES === "true";
 
 const nextConfig: NextConfig = {
-  images: { unoptimized: true },
+  images: {
+    loader: "custom",
+    loaderFile: "./src/lib/image-loader.ts",
+    deviceSizes: [640, 960, 1280, 1920],
+    imageSizes: [96, 240, 480],
+  },
   ...(pages && {
     output: "export",
     basePath: process.env.NEXT_PUBLIC_BASE_PATH || undefined,

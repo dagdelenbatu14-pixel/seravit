@@ -24,6 +24,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Küçük ürün görselleri
+        run: node scripts/thumbs.mjs
       - id: pages
         uses: actions/configure-pages@v5
       - name: Statik derleme

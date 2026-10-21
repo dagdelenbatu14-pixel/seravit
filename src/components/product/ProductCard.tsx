@@ -11,7 +11,7 @@ export function ProductCard({ product, priority }: { product: Product; priority?
   return (
     <article className="group relative flex flex-col">
       <div className="relative">
-        <TileVisual product={product} hoverLaid priority={priority} className="aspect-[4/5] rounded-xl" />
+        <TileVisual product={product} hoverLaid priority={priority} sizes="(min-width: 1024px) 25vw, 50vw" className="aspect-[4/5] rounded-xl" />
         <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
           {product.inShowroom && (
             <span className="rounded-full bg-paper/90 px-2.5 py-1 text-[11px] font-medium backdrop-blur">Showroom&apos;da</span>
